@@ -24,6 +24,23 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final int DBVERSION = 30;
     private static final String DBNAME = "foirun.db";
 
+    private static final String CREATE_TABLE_LOCATION = "create table "
+            + DbModels.LOCATION.TABLE + " ( "
+            + (DbModels.PRIMARY_KEY +" integer primary key autoincrement, ")
+            + (DbModels.LOCATION.ACTIVITY_ID + " integer not null, ")
+            + (DbModels.LOCATION.LAP + " integer not null, ")
+            + (DbModels.LOCATION.TYPE + " integer not null, ")
+            + (DbModels.LOCATION.TIME + " integer not null, ")
+            + (DbModels.LOCATION.LONGITUDE + " real not null, ")
+            + (DbModels.LOCATION.LATITUDE + " real not null, ")
+            + (DbModels.LOCATION.ACCURANCY + " real, ")
+            + (DbModels.LOCATION.ALTITUDE + " real, ")
+            + (DbModels.LOCATION.SPEED + " real, ")
+            + (DbModels.LOCATION.BEARING + " real, ")
+            + (DbModels.LOCATION.HR + " integer, ")
+            + (DbModels.LOCATION.CADENCE + " integer ")
+            + ");";
+
     private static DbHelper singleton = null;
 
     private static synchronized DbHelper getHelper(Context context) {
