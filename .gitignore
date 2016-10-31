@@ -12,12 +12,12 @@ opa-debug-js
 *.exe
 *.log
 *.iml
-.gradle
-.idea/workspace.xml
-.idea/libraries
+FOIRun/.gradle
+FOIRun/.idea/workspace.xml
+FOIRun/.idea/libraries
 .DS_Store
-build
-captures
+FOIRun/build
+FOIRun/captures
 .externalNativeBuild
 local.properties
 

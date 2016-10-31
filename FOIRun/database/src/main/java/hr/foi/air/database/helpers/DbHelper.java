@@ -1,17 +1,12 @@
-package hr.foi.air.database.helper;
+package hr.foi.air.database.helpers;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.AsyncTask;
 import android.util.Log;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +66,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public static synchronized SQLiteDatabase getWritableDatabase(Context context) {
         if (sWritableDB == null) {
-            sWritableDB =getHelper(context).getReadableDatabase();
+            sWritableDB =getHelper(context).getWritableDatabase();
         }
         return sWritableDB;
     }
@@ -85,18 +80,28 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase arg0) {
+        arg0.execSQL(CREATE_TABLE_LOCATION);
 
         onUpgrade(arg0, 0, DBVERSION);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase arg0, int oldVersion, int newVersion) {
+
         Log.e(getClass().getName(), "onUpgrade: oldVersion: " + oldVersion + ", newVersion: " + newVersion);
+
+        if (newVersion < oldVersion) {
+            throw new java.lang.UnsupportedOperationException(
+                    "Downgrade not supported");
+        }
+
     }
 
     private static void echoDo(SQLiteDatabase arg0, String str) {
+
         Log.e("DBHelper", "execSQL(" + str + ")");
         arg0.execSQL(str);
+
     }
 
     public static ContentValues get(Cursor c) {
