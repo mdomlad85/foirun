@@ -11,3 +11,13 @@ opa-debug-js
 *.api-txt
 *.exe
 *.log
+*.iml
+.gradle
+.idea/workspace.xml
+.idea/libraries
+.DS_Store
+build
+captures
+.externalNativeBuild
+local.properties
+
