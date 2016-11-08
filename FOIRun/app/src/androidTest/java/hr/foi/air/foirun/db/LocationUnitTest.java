@@ -6,6 +6,8 @@ import android.support.test.InstrumentationRegistry;
 
 import org.junit.Test;
 
+import java.util.Objects;
+
 import hr.foi.air.database.core.DbModels;
 import hr.foi.air.database.entities.LocationEntity;
 import hr.foi.air.database.helpers.DbHelper;
@@ -14,7 +16,7 @@ import static org.junit.Assert.*;
 
 public class LocationUnitTest {
 
-    private LocationEntity get_some_entity(long id) {
+    private LocationEntity fillEntity() {
         LocationEntity locEntity = new LocationEntity();
         locEntity.setActivityId(1L);
         locEntity.setTime(3600000L);
@@ -22,34 +24,52 @@ public class LocationUnitTest {
         locEntity.setLongitude(16.613118);
         locEntity.setLap(10);
         locEntity.setType(DbModels.LOCATION.TYPE_START);
-        if(id != -1) locEntity.setId(id);
 
         return locEntity;
     }
 
-    @Test
     public void insert_Location() throws Exception {
         Context ctx = InstrumentationRegistry.getTargetContext();
-        final long insert = get_some_entity(-1).insert(DbHelper.getWritableDatabase(ctx));
+        final long insert = fillEntity().insert(DbHelper.getWritableDatabase(ctx));
         assertTrue(insert != -1);
     }
 
     @Test
     public void update_Location() throws Exception {
-        LocationEntity loc = get_some_entity(1);
-        loc.setAltitude(25.11);
+        insert_Location();
+        long id = 1;
+        double alt = Math.random() * 100;
         Context ctx = InstrumentationRegistry.getTargetContext();
-        final long update = loc.update(DbHelper.getWritableDatabase(ctx));
-        assertTrue(update != -1);
+        SQLiteDatabase mDB = DbHelper.getWritableDatabase(ctx);
+        LocationEntity le = new LocationEntity();
+        //read
+        le.readByPrimaryKey(mDB, 1);
+        le.setAltitude(alt);
+        //update
+        le.update(mDB);
+        //read again for check
+        le.readByPrimaryKey(mDB, id);
+        assertEquals(le.getAltitude(), alt, 0);
     }
 
     @Test
     public void select_Location() throws Exception {
+        insert_Location();
         Context ctx = InstrumentationRegistry.getTargetContext();
-        final SQLiteDatabase db = DbHelper.getReadableDatabase(ctx);
-        LocationEntity.LocationList<LocationEntity> ll = new LocationEntity.LocationList<>(db, 1);
-        assertNotNull(ll.iterator());
-        assertTrue(ll.getCount() > 0);
-        ll.close();
+        final SQLiteDatabase mDB = DbHelper.getReadableDatabase(ctx);
+        LocationEntity.LocationList<LocationEntity> ll = new LocationEntity.LocationList<>(mDB, 1);
+
+        LocationEntity le = new LocationEntity();
+        le.readByPrimaryKey(mDB, 1);
+
+        boolean isValid = false;
+        while (ll.iterator().hasNext()){
+            LocationEntity l = ll.iterator().next();
+            if(Objects.equals(le.getLatitude(), l.getLatitude())){
+                isValid = true;
+                break;
+            }
+        }
+        assertTrue(isValid);
     }
 }

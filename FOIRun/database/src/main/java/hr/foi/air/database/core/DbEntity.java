@@ -9,5 +9,5 @@ import android.database.sqlite.SQLiteDatabase;
 interface DbEntity {
     long insert(SQLiteDatabase db);
 
-    void update(SQLiteDatabase db);
+    long update(SQLiteDatabase db);
 }
