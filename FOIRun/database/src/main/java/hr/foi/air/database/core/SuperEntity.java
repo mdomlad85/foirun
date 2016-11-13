@@ -49,9 +49,9 @@ public abstract class SuperEntity  implements DbEntity {
         return this.getId();
     }
 
-    public void update(SQLiteDatabase db) {
+    public long update(SQLiteDatabase db) {
         if (getId() != null) {
-            db.update(getTableName(), values(), DbModels.PRIMARY_KEY + " = ?", new String[]{Long.toString(getId())});
+            return db.update(getTableName(), values(), DbModels.PRIMARY_KEY + " = ?", new String[]{Long.toString(getId())});
         } else {
             throw new IllegalArgumentException("Entity has no primary key");
         }
