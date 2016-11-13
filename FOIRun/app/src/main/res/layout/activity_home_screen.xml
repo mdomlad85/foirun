@@ -1,12 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:design="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_home"
+    android:id="@+id/activity_home_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="hr.foi.air.foirun.HomeScreen">
 
-    tools:context="hr.foi.air.foirun.HomeActivity">
+<TextView
+    android:text="Hello, home screen!"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentStart="true"
+    android:id="@+id/hello_text" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottomNavigationView"
@@ -16,4 +26,5 @@
         android:background="@color/colorPrimaryDark"
         design:menu="@menu/menu_navigation"
         />
+
 </android.support.design.widget.CoordinatorLayout>
