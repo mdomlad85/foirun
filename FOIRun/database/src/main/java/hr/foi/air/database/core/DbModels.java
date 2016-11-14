@@ -26,4 +26,12 @@ public enum DbModels {
         public static final int TYPE_RESUME = 5;
         public static final int TYPE_DISCARD = 6;
     }
+
+    public enum LOGIN {
+        ;
+        public static final String TABLE = "user";
+        public static final String EMAIL = "email";
+        public static final String ACCESS_TOKEN = "access_token";
+        public static final String NAME = "name";
+    }
 }

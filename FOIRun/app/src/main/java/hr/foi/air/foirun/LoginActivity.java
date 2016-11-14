@@ -16,6 +16,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.sql.SQLOutput;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -83,12 +85,14 @@ public class LoginActivity extends AppCompatActivity {
             System.out.println("---->");
             System.out.println(acct.getDisplayName());
             System.out.println(acct.getEmail());
+            System.out.println(acct.getIdToken());
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             //updateUI(true);
             Intent i = new Intent(this, HomeScreen.class);
             Bundle args = new Bundle();
             args.putString("mail", acct.getEmail());
             args.putString("username", acct.getDisplayName());
+            args.putString("token", acct.getIdToken());
             i.putExtras(args);
             startActivity(i);
 

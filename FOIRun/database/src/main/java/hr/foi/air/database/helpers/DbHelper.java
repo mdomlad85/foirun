@@ -36,6 +36,13 @@ public class DbHelper extends SQLiteOpenHelper {
             + (DbModels.LOCATION.CADENCE + " integer ")
             + ");";
 
+    private static final String CREATE_TABLE_USER =" create table "
+            + DbModels.LOGIN.TABLE + " ("
+            + (DbModels.LOGIN.EMAIL + " varchar(30) primary key, ")
+            + (DbModels.LOGIN.NAME + " varchar(30) not null, ")
+            + (DbModels.LOGIN.ACCESS_TOKEN + " varchar(100)" )
+            + " );";
+
     private static DbHelper singleton = null;
 
     private static synchronized DbHelper getHelper(Context context) {
@@ -81,6 +88,7 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase arg0) {
         arg0.execSQL(CREATE_TABLE_LOCATION);
+        arg0.execSQL(CREATE_TABLE_USER);
 
         onUpgrade(arg0, 0, DBVERSION);
     }
