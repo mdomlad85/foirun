@@ -15,6 +15,8 @@ import hr.foi.air.database.helpers.DbHelper;
 
 public class HomeScreen extends AppCompatActivity {
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -36,4 +36,5 @@ dependencies {
     compile project(path: ':database')
 
     compile 'com.google.android.gms:play-services-auth:9.0.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.+'
 }
