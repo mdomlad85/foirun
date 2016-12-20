@@ -3,6 +3,11 @@
     <application android:allowBackup="true" android:label="@string/app_name"
         android:supportsRtl="true">
 
+        <meta-data android:name="DATABASE" android:value="foirun.db" />
+        <meta-data android:name="VERSION" android:value="2" />
+        <meta-data android:name="QUERY_LOG" android:value="true" />
+        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="hr.foi.air.database" />
+
     </application>
 
 </manifest>
