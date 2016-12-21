@@ -1,12 +1,17 @@
 package hr.foi.air.foirun;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 
 import com.google.android.gms.auth.api.Auth;
@@ -16,11 +21,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.server.converter.StringToIntConverter;
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
 
 import java.sql.SQLOutput;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import hr.foi.air.core.HashHelper;
+import hr.foi.air.database.entities.User;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -30,11 +39,26 @@ public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 9001;
     private static final String TAG = "SignInActivity";
 
+    Button mBtnSignIn;
+    Button mBtnGoogleSign;
+    AutoCompleteTextView mEmail;
+    EditText mPassword;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
+        FlowManager.init(new FlowConfig.Builder(this).build());
+
+        mBtnSignIn = (Button) findViewById(R.id.email_sign_in_button);
+        mBtnGoogleSign = (Button) findViewById(R.id.google_sign_in_button);
+        mEmail = (AutoCompleteTextView) findViewById(R.id.email);
+        mPassword = (EditText) findViewById(R.id.password);
+
 // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -46,17 +70,55 @@ public class LoginActivity extends AppCompatActivity {
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        signInButton.setOnClickListener(new View.OnClickListener() {
+        mBtnGoogleSign.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switch (v.getId()) {
-                    case R.id.sign_in_button:
+                    case R.id.google_sign_in_button:
                         signIn();
                         break;
                     // ...
                 }
 
+            }
+        });
+
+        final Activity that = this;
+
+        mBtnSignIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String email = mEmail.getText().toString();
+                String password = mPassword.getText().toString();
+                Intent i = new Intent(that, HomeScreen.class);
+                Bundle args = new Bundle();
+                args.putString("mail", email);
+                String username = email.substring(0, email.indexOf('@'));
+                args.putString("username", username);
+
+                User existingUser = User.getByEmail(email);
+
+                boolean isValid = true;
+                String msg = "";
+                if(existingUser != null){
+                    if(!existingUser.isValid(password)){
+                        msg = "Combination of username and password is wrong";
+                        isValid = false;
+                    } else {
+                        msg = "You are sucessfully logged in";
+                    }
+                } else {
+                    new User(username, email, password, false).insert();
+                    msg = "You are sucessfully registered";
+
+                }
+
+                Toast.makeText(that, msg, Toast.LENGTH_LONG).show();
+
+               if(isValid){
+                   i.putExtras(args);
+                   startActivity(i);
+               }
             }
         });
     }
@@ -83,18 +145,19 @@ public class LoginActivity extends AppCompatActivity {
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            //acct.getDisplayName()
-            System.out.println("---->");
-            System.out.println(acct.getDisplayName());
-            System.out.println(acct.getEmail());
-            System.out.println(acct.getIdToken());
+
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             //updateUI(true);
             Intent i = new Intent(this, HomeScreen.class);
             Bundle args = new Bundle();
-            args.putString("mail", acct.getEmail());
-            args.putString("username", acct.getDisplayName());
-            args.putString("token", acct.getIdToken());
+
+            String username = acct.getDisplayName();
+            String token = acct.getIdToken();
+            String mail = acct.getEmail();
+
+            if(User.getByMailName(mail) == null){
+                new User(username, mail, token, true).save();
+            }
             i.putExtras(args);
             startActivity(i);
 

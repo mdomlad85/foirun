@@ -5,6 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.common.server.converter.StringToIntConverter;
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
 
 import butterknife.OnClick;
 import hr.foi.air.database.entities.User;
@@ -18,17 +23,6 @@ public class HomeScreen extends AppCompatActivity {
         //System.out.println(getIntent().getExtras().getString("username"));
         TextView t = (TextView) findViewById(R.id.hello_text);
         t.setText("Hello, "+ getIntent().getExtras().getString("username"));
-        User user = new User();
-        user.setName(getIntent().getExtras().getString("username"));
-        user.setEmail(getIntent().getExtras().getString("mail"));
-        user.setToken(getIntent().getExtras().getString("token"));
-
-        final long insert = user.insert();
-        if(insert == -1){
-            System.out.println("Greška");
-        }else{
-            System.out.println("ISPRAVNO");
-        }
     }
 
     @OnClick(R.id.homeItem)
