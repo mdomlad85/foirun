@@ -16,4 +16,6 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="GPS_satellites">GPS satellites</string>
+    <string name="Start_GPS">Start GPS</string>
 </resources>

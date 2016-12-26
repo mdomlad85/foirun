@@ -6,6 +6,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
     defaultConfig {
+        multiDexEnabled true
         applicationId "hr.foi.air.foirun"
         minSdkVersion 19
         targetSdkVersion 25
@@ -35,6 +36,8 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
     compile project(':database')
     compile project(':core')
+
+    compile 'com.github.kingsammalik:SamLocationAndGeocoding:1.1.0'
 
     compile 'com.google.android.gms:play-services-auth:9.0.0'
 }

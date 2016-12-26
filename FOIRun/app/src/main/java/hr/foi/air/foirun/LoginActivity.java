@@ -18,17 +18,11 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.server.converter.StringToIntConverter;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 
-import java.sql.SQLOutput;
-
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-import hr.foi.air.core.HashHelper;
 import hr.foi.air.database.entities.User;
 
 public class LoginActivity extends AppCompatActivity {
@@ -90,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email = mEmail.getText().toString();
                 String password = mPassword.getText().toString();
-                Intent i = new Intent(that, HomeScreen.class);
+                Intent i = new Intent(that, MainActivity.class);
                 Bundle args = new Bundle();
                 args.putString("mail", email);
                 String username = email.substring(0, email.indexOf('@'));
@@ -148,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
 
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             //updateUI(true);
-            Intent i = new Intent(this, HomeScreen.class);
+            Intent i = new Intent(this, MainActivity.class);
             Bundle args = new Bundle();
 
             String username = acct.getDisplayName();
