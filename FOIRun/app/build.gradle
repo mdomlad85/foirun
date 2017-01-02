@@ -40,4 +40,5 @@ dependencies {
     compile 'com.github.kingsammalik:SamLocationAndGeocoding:1.1.0'
 
     compile 'com.google.android.gms:play-services-auth:9.0.0'
+    compile 'net.danlew:android.joda:2.9.5.1'
 }

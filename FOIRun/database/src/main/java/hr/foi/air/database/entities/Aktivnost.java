@@ -1,6 +1,8 @@
 package hr.foi.air.database.entities;
 
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.ForeignKeyReference;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -22,21 +24,22 @@ public class Aktivnost extends BaseModel {
     @Column long time;
     @Column String name;
     @Column String comment;
-    @Column int type;
-    @Column int avg_hr;
+    @Column double avg_hr;
     @Column int max_hr;
     @Column double avg_cadence;
     @Column boolean deleted;
+    @Column int type_id;
+
 
     public Aktivnost(long start_time, double distance, long time, String name, String comment,
-                     int type, int avg_hr, int max_hr, double avg_cadence, boolean deleted) {
+                     int type_id, int avg_hr, int max_hr, double avg_cadence, boolean deleted) {
 
         this.start_time = start_time;
         this.distance = distance;
         this.time = time;
         this.name = name;
         this.comment = comment;
-        this.type = type;
+        this.type_id = type_id;
         this.avg_hr = avg_hr;
         this.max_hr = max_hr;
         this.avg_cadence = avg_cadence;
@@ -107,19 +110,11 @@ public class Aktivnost extends BaseModel {
         this.comment = comment;
     }
 
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
-
-    public int getAvg_hr() {
+    public double getAvg_hr() {
         return avg_hr;
     }
 
-    public void setAvg_hr(int avg_hr) {
+    public void setAvg_hr(double avg_hr) {
         this.avg_hr = avg_hr;
     }
 
@@ -145,5 +140,13 @@ public class Aktivnost extends BaseModel {
 
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public int getType_id() {
+        return type_id;
+    }
+
+    public void setType_id(int type_id) {
+        this.type_id = type_id;
     }
 }

@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'android-apt'
 
-def dbflow_version = "develop-SNAPSHOT"
+def dbflow_version = "4.0.0-beta3"
 
 android {
     compileSdkVersion 24

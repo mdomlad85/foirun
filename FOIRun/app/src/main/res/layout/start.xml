@@ -8,34 +8,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
-    <TabHost
-        android:id="@+id/tabhost_start"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_above="@+id/gpsinfo" >
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-            </TabWidget>
-
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@android:id/tabs" >
-
-            </FrameLayout>
-
-        </RelativeLayout>
-    </TabHost>
-
     <RelativeLayout
         android:id="@+id/gpsinfo"
         android:layout_width="fill_parent"
