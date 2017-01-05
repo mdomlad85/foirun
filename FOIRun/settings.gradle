@@ -1,1 +1,1 @@
-include ':app', ':database', ':hrdevice', ':core', ':gpstracker'
+include ':app', ':database', ':core', ':wear'

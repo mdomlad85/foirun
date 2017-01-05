@@ -2,6 +2,7 @@ package hr.foi.air.foirun.util;
 
 import android.content.Context;
 import android.location.Address;
+import android.widget.Toast;
 
 import com.entire.sammalik.samlocationandgeocoding.SamLocationRequestService;
 
@@ -12,23 +13,30 @@ import java.util.Random;
 
 import hr.foi.air.database.entities.Aktivnost;
 import hr.foi.air.database.entities.Location;
+import hr.foi.air.foirun.events.BusProvider;
 
 
 public class ActivityTracker extends SamLocationRequestService implements SamLocationRequestService.SamLocationListener {
 
     private Aktivnost mActivity;
+    private Context mContext;
 
     private int lap;
 
     public ActivityTracker(Context context) {
         super(context);
+        mContext = context;
         mActivity = new Aktivnost();
+
         this.executeService(this);
     }
 
 
 
     public void Start(String name, int typeId, boolean isWithComment){
+
+        this.executeService(this);
+        BusProvider.getInstance().register(this);
 
         mActivity.setName(name);
 
@@ -59,6 +67,7 @@ public class ActivityTracker extends SamLocationRequestService implements SamLoc
     public void Stop(){
 
         this.stopLocationUpdates();
+        BusProvider.getInstance().unregister(this);
 
         long time = getCurrentMilis() - mActivity.getStart_time();
         mActivity.setTime(time);
@@ -73,6 +82,8 @@ public class ActivityTracker extends SamLocationRequestService implements SamLoc
     public void onLocationUpdate(android.location.Location location, Address address) {
 
         if(mActivity.getId() > 0){
+
+            Toast.makeText(mContext, "Adresa: " + address.toString(), Toast.LENGTH_LONG).show();
 
             Location eLocation = new Location();
 

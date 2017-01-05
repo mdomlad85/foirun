@@ -11,8 +11,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/database" />
-            <option value="$PROJECT_DIR$/gpstracker" />
-            <option value="$PROJECT_DIR$/hrdevice" />
+            <option value="$PROJECT_DIR$/wear" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
