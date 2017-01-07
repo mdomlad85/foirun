@@ -1,6 +1,7 @@
 package hr.foi.air.foirun.util;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
@@ -312,5 +313,13 @@ public class ActivityTracker extends LocationTracker {
         if(locCount < 2) return  0;
 
         return locations.get(locCount - 1).getTime() - locations.get(0).getTime();
+    }
+
+    public Aktivnost getAktivnost() {
+        return mActivity;
+    }
+
+    public void clearMap() {
+        mMap.clear();
     }
 }

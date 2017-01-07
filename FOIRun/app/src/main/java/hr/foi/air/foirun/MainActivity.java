@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -27,6 +28,7 @@ import hr.foi.air.foirun.data.Sensor;
 import hr.foi.air.foirun.events.BusProvider;
 import hr.foi.air.foirun.events.NewSensorEvent;
 import hr.foi.air.foirun.ui.StartActivityFragment;
+import hr.foi.air.foirun.ui.StopActivityFragment;
 import hr.foi.air.foirun.util.ActivityTracker;
 import hr.foi.air.foirun.util.RemoteSensorManager;
 import hr.foi.air.foirun.util.SensorTracker;
@@ -46,8 +48,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @BindView(R.id.wear_button)
     ImageButton wearBtn;
 
+    @BindView(R.id.start_buttons)
+    LinearLayout startBtns;
+
     private SupportMapFragment mapFragment;
     private StartActivityFragment startFragment;
+    private StopActivityFragment stopFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         startFragment = (StartActivityFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.startactivity_fragment);
+
+        stopFragment = (StopActivityFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.stopactivity_fragment);
 
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -70,6 +79,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         FoiDatabase.FillActivityTracker();
 
         mapFragment.getView().setVisibility(View.INVISIBLE);
+        stopFragment.getView().setVisibility(View.INVISIBLE);
 
         remoteSensorManager = RemoteSensorManager.getInstance(this);
         remoteSensorManager.addTag("HEART_RATE");
@@ -93,13 +103,59 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    @OnClick(R.id.save_activity)
+    public void onSaveActivity(View view){
+
+        if(view.getId() == R.id.save_activity){
+
+            PrepearePodium();
+
+            Toast.makeText(this,
+                    String.format("Activity %s saved", mTracker.getAktivnost().getName()),
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @OnClick(R.id.delete_activity)
+    public void onDeleteActivity(View view){
+
+        if(view.getId() == R.id.delete_activity){
+
+            PrepearePodium();
+
+            mTracker.getAktivnost().delete();
+
+            Toast.makeText(this,
+                    String.format("Activity %s deleted", mTracker.getAktivnost().getName()),
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void PrepearePodium() {
+
+        mTracker.clearMap();
+        mapFragment.getView().setVisibility(View.INVISIBLE);
+        stopFragment.getView().setVisibility(View.INVISIBLE);
+        startFragment.getView().setVisibility(View.VISIBLE);
+        startFragment.ClearForm();
+        startBtns.setVisibility(View.VISIBLE);
+
+    }
+
     private void Stop(String start) {
 
+        startBtns.setVisibility(View.INVISIBLE);
         startBtn.setText(start);
         mTracker.Stop();
         mSTracker.Detach();
         remoteSensorManager.stopMeasurement();
         BusProvider.getInstance().unregister(this);
+
+        stopFragment.setActivityTxt(mTracker.getAktivnost().getType_id());
+        stopFragment.setDistanceTxt(mTracker.getAktivnost().getDistance());
+        stopFragment.setTimeTxt(mTracker.getAktivnost().getTime());
+
+        stopFragment.getView().setVisibility(View.VISIBLE);
 
     }
 

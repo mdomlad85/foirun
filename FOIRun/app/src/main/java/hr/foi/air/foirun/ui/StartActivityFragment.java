@@ -94,4 +94,10 @@ public class StartActivityFragment extends Fragment implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> arg) {
 
     }
+
+    public void ClearForm() {
+        commentTxt.setText("");
+        nameTxt.setText("");
+        typesDdl.setSelection(0);
+    }
 }

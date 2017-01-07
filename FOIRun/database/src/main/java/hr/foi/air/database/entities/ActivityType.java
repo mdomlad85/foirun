@@ -50,4 +50,12 @@ public class ActivityType extends BaseModel {
                 .querySingle();
 
     }
+
+    public static ActivityType getById(int typeId) {
+
+        return new Select().from(ActivityType.class)
+                .where(ActivityType_Table.id.eq(typeId))
+                .querySingle();
+
+    }
 }
