@@ -110,6 +110,11 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(that, msg, Toast.LENGTH_LONG).show();
 
                if(isValid){
+
+                   User user = User.getByMailName(email);
+
+                   args.putInt("uid", user.getId());
+
                    i.putExtras(args);
                    startActivity(i);
                }
@@ -152,6 +157,10 @@ public class LoginActivity extends AppCompatActivity {
             if(User.getByMailName(mail) == null){
                 new User(username, mail, token, true).save();
             }
+
+            User user = User.getByMailName(mail);
+
+            args.putInt("uid", user.getId());
             i.putExtras(args);
             startActivity(i);
 

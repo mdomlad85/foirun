@@ -1,5 +1,6 @@
 package hr.foi.air.foirun;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -110,6 +111,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             PrepearePodium();
 
+            Intent intent = getIntent();
+            int uid = intent.getIntExtra("uid",  0);
+
+            mTracker.getAktivnost().setUser_id(uid);
+            mTracker.getAktivnost().save();
+
             Toast.makeText(this,
                     String.format("Activity %s saved", mTracker.getAktivnost().getName()),
                     Toast.LENGTH_LONG).show();
@@ -196,6 +203,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         googleMap.setMinZoomPreference(16);
         googleMap.setMaxZoomPreference(18);
+
+        //Map is used to show and track movement
+        //if somebody wanna look where is moving
         mTracker.setmMap(googleMap);
     }
 }

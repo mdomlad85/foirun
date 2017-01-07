@@ -29,6 +29,7 @@ public class Aktivnost extends BaseModel {
     @Column double avg_cadence;
     @Column boolean deleted;
     @Column int type_id;
+    @Column int user_id;
 
 
     public Aktivnost(long start_time, double distance, long time, String name, String comment,
@@ -148,5 +149,13 @@ public class Aktivnost extends BaseModel {
 
     public void setType_id(int type_id) {
         this.type_id = type_id;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 }

@@ -13,7 +13,7 @@ import hr.foi.air.database.entities.ActivityType;
 @Database(name = FoiDatabase.NAME, version = FoiDatabase.VERSION)
 public class FoiDatabase {
     public static final String NAME = "foirun";
-    public static final int VERSION = 2;
+    public static final int VERSION = 3;
 
     public static void FillActivityTracker() {
 
