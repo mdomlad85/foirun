@@ -1,5 +1,6 @@
 package hr.foi.air.foirun;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -19,29 +21,32 @@ import com.squareup.otto.Subscribe;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import hr.foi.air.database.FoiDatabase;
+import hr.foi.air.database.entities.Aktivnost;
+import hr.foi.air.foirun.adapter.AktivnostListAdapter;
 import hr.foi.air.foirun.data.Sensor;
 import hr.foi.air.foirun.events.BusProvider;
 import hr.foi.air.foirun.events.NewSensorEvent;
-import hr.foi.air.foirun.ui.StartActivityFragment;
-import hr.foi.air.foirun.ui.StopActivityFragment;
+import hr.foi.air.foirun.fragments.StartActivityFragment;
+import hr.foi.air.foirun.fragments.StopActivityFragment;
 import hr.foi.air.foirun.util.ActivityTracker;
 import hr.foi.air.foirun.util.RemoteSensorManager;
 import hr.foi.air.foirun.util.SensorTracker;
-
-import static android.R.attr.fragment;
-import static android.R.attr.mapViewStyle;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private ActivityTracker mTracker;
     private SensorTracker mSTracker;
     private RemoteSensorManager remoteSensorManager;
+
+    @BindView(R.id.show_myactivies)
+    Button showBtn;
 
     @BindView(R.id.start_button)
     Button startBtn;
@@ -52,9 +57,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @BindView(R.id.start_buttons)
     LinearLayout startBtns;
 
+    @BindView(R.id.scoreboard)
+    ListView scoreboard;
+
     private SupportMapFragment mapFragment;
     private StartActivityFragment startFragment;
     private StopActivityFragment stopFragment;
+    private boolean isInListView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,11 +90,46 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         mapFragment.getView().setVisibility(View.INVISIBLE);
         stopFragment.getView().setVisibility(View.INVISIBLE);
+        scoreboard.setVisibility(View.INVISIBLE);
 
         remoteSensorManager = RemoteSensorManager.getInstance(this);
         remoteSensorManager.addTag("HEART_RATE");
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+    }
+
+    @OnClick(R.id.show_myactivies)
+    public void onShowActivities(View view){
+
+        if(view.getId() == R.id.show_myactivies){
+
+            int uid = getIntent().getIntExtra("uid",  0);
+            List<Aktivnost> aktivnosti = Aktivnost.getByUserId(uid);
+
+            AktivnostListAdapter adapter = new AktivnostListAdapter(this, aktivnosti);
+
+            scoreboard.setAdapter(adapter);
+            scoreboard.setVisibility(View.VISIBLE);
+            startFragment.getView().setVisibility(View.INVISIBLE);
+            startBtns.setVisibility(View.INVISIBLE);
+
+            isInListView = true;
+        }
+    }
+
+    //Push back button to go back from list view
+    @Override
+    public void onBackPressed() {
+
+        if(isInListView){
+
+            scoreboard.setVisibility(View.INVISIBLE);
+            startFragment.getView().setVisibility(View.VISIBLE);
+            startBtns.setVisibility(View.VISIBLE);
+
+            isInListView = false;
+
+        }
     }
 
     @OnClick(R.id.start_button)
@@ -111,8 +155,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
             PrepearePodium();
 
-            Intent intent = getIntent();
-            int uid = intent.getIntExtra("uid",  0);
+            int uid = getIntent().getIntExtra("uid",  0);
 
             mTracker.getAktivnost().setUser_id(uid);
             mTracker.getAktivnost().save();

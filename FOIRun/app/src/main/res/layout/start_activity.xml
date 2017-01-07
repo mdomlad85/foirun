@@ -58,7 +58,14 @@
                 android:padding="5dp"
                 android:layout_marginTop="10dp"/>
 
-
+            <Button
+                android:id="@+id/show_myactivies"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/show_myactivities"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </ScrollView>

@@ -67,6 +67,14 @@ public class Aktivnost extends BaseModel {
         return locationList;
     }
 
+    public static List<Aktivnost> getByUserId(int uid) {
+
+        return new Select().from(Aktivnost.class)
+                .where(Aktivnost_Table.user_id.eq(uid))
+                .queryList();
+
+    }
+
     public int getId() {
         return id;
     }

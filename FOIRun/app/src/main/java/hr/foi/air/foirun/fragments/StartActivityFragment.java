@@ -1,9 +1,7 @@
-package hr.foi.air.foirun.ui;
+package hr.foi.air.foirun.fragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
