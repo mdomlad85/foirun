@@ -21,6 +21,7 @@ public class AktivnostListAdapter extends BaseAdapter {
 
 
     public AktivnostListAdapter(Context context, List<Aktivnost> itemsItems) {
+
         this.mContext = context;
         this.itemsItems = itemsItems;
 

@@ -8,21 +8,15 @@
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
-    <ScrollView
+    <ListView
+        android:id="@+id/scoreboard"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ListView
-            android:id="@+id/scoreboard"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="5dp"
-            android:clipToPadding="false"
-            android:dividerHeight="1dp"
-            android:cacheColorHint="#FFFFFF"
-            android:layout_marginTop="56dp"/>
-
-    </ScrollView>
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:clipToPadding="false"
+        android:dividerHeight="1dp"
+        android:cacheColorHint="#FFFFFF"
+        android:layout_marginTop="36dp"/>
 
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
