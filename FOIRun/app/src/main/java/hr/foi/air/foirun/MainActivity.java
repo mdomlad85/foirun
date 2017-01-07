@@ -1,6 +1,6 @@
 package hr.foi.air.foirun;
 
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -8,9 +8,9 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.wearable.Node;
-import com.google.android.gms.wearable.NodeApi;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.squareup.otto.Subscribe;
@@ -24,14 +24,17 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import hr.foi.air.database.FoiDatabase;
 import hr.foi.air.foirun.data.Sensor;
-import hr.foi.air.foirun.data.SensorNames;
 import hr.foi.air.foirun.events.BusProvider;
 import hr.foi.air.foirun.events.NewSensorEvent;
+import hr.foi.air.foirun.ui.StartActivityFragment;
 import hr.foi.air.foirun.util.ActivityTracker;
 import hr.foi.air.foirun.util.RemoteSensorManager;
 import hr.foi.air.foirun.util.SensorTracker;
 
-public class MainActivity extends AppCompatActivity {
+import static android.R.attr.fragment;
+import static android.R.attr.mapViewStyle;
+
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private ActivityTracker mTracker;
     private SensorTracker mSTracker;
@@ -42,20 +45,32 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.wear_button)
     ImageButton wearBtn;
-    private List<Node> mNodes;
-    private List<Sensor> mSensors;
+
+    private SupportMapFragment mapFragment;
+    private StartActivityFragment startFragment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start);
 
+        mTracker = new ActivityTracker(this);
+
+        startFragment = (StartActivityFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.startactivity_fragment);
+
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+
+        mapFragment.getMapAsync(this);
+
         ButterKnife.bind(this);
         JodaTimeAndroid.init(this);
         FlowManager.init(new FlowConfig.Builder(this).build());
-        //FoiDatabase.FillActivityTracker();
+        FoiDatabase.FillActivityTracker();
 
-        mTracker = new ActivityTracker(this);
+        mapFragment.getView().setVisibility(View.INVISIBLE);
+
         remoteSensorManager = RemoteSensorManager.getInstance(this);
         remoteSensorManager.addTag("HEART_RATE");
 
@@ -67,61 +82,64 @@ public class MainActivity extends AppCompatActivity {
 
         if(view.getId() == R.id.start_button){
 
-            mTracker.Start("Test", 1, false);
+            String start = getResources().getString(R.string.Start_Activity);
+            String stop = getResources().getString(R.string.Stop_Activity);
 
-            List<hr.foi.air.foirun.data.Sensor> sensors = RemoteSensorManager.getInstance(this).getSensors();
-
-            mSTracker = SensorTracker.newInstance(Sensor.TYPE_HEART_RATE, this);
-            mSTracker.Attach();
-
-            remoteSensorManager.startMeasurement();
-
-            startBtn.setVisibility(View.INVISIBLE);
+            if(startBtn.getText().toString().equals(start)){
+                this.Start(stop);
+            } else {
+                this.Stop(start);
+            }
         }
     }
 
-    @OnClick(R.id.wear_button)
-    public void onStopActivity(View view){
+    private void Stop(String start) {
 
-        if(view.getId() == R.id.wear_button){
-
-            mTracker.Stop();
-            remoteSensorManager.stopMeasurement();
-            startBtn.setVisibility(View.VISIBLE);
-        }
-    }
-
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
+        startBtn.setText(start);
+        mTracker.Stop();
+        mSTracker.Detach();
+        remoteSensorManager.stopMeasurement();
         BusProvider.getInstance().unregister(this);
 
-        remoteSensorManager.stopMeasurement();
     }
-    @Override
-    protected void onResume() {
-        super.onResume();
+
+    private void Start(String stop) {
+
+        if(!startFragment.isValid()){
+            Toast.makeText(this, "You must enter title.", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        startBtn.setText(stop);
+
+        mTracker.Start(startFragment.getName(),
+                startFragment.getComment(), startFragment.getTypeId());
+
         BusProvider.getInstance().register(this);
-        mSensors = RemoteSensorManager.getInstance(this).getSensors();
+
+        mSTracker = SensorTracker.newInstance(Sensor.TYPE_HEART_RATE, this);
+
+        mSTracker.Attach();
 
         remoteSensorManager.startMeasurement();
 
-
+        mapFragment.getView().setVisibility(View.VISIBLE);
+        startFragment.getView().setVisibility(View.INVISIBLE);
     }
-
-
-
 
     private void notifyUSerForNewSensor(Sensor sensor) {
         Toast.makeText(this, "New Sensor!\n" + sensor.getName(), Toast.LENGTH_SHORT).show();
     }
-
 
     @Subscribe
     public void onNewSensorEvent(final NewSensorEvent event) {
         notifyUSerForNewSensor(event.getSensor());
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        googleMap.setMinZoomPreference(16);
+        googleMap.setMaxZoomPreference(18);
+        mTracker.setmMap(googleMap);
+    }
 }

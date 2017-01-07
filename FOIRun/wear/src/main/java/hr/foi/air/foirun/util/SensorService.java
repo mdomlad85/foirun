@@ -56,7 +56,7 @@ public class SensorService extends Service implements SensorEventListener {
         client = DeviceClient.getInstance(this);
 
         Notification.Builder builder = new Notification.Builder(this);
-        builder.setContentTitle("Sensor Dashboard");
+        builder.setContentTitle("FOIRun");
         builder.setContentText("Collecting sensor data..");
         builder.setSmallIcon(R.mipmap.ic_launcher);
 

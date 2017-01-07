@@ -1,89 +1,68 @@
 package hr.foi.air.foirun.util;
 
+import android.Manifest;
 import android.content.Context;
-import android.location.Address;
+import android.content.pm.PackageManager;
+
+import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
-import com.entire.sammalik.samlocationandgeocoding.SamLocationRequestService;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.joda.time.DateTime;
 
 import java.util.List;
 import java.util.Random;
 
+import fr.quentinklein.slt.LocationTracker;
+import fr.quentinklein.slt.TrackerSettings;
 import hr.foi.air.database.entities.Aktivnost;
 import hr.foi.air.database.entities.Location;
 import hr.foi.air.foirun.events.BusProvider;
 
 
-public class ActivityTracker extends SamLocationRequestService implements SamLocationRequestService.SamLocationListener {
+public class ActivityTracker extends LocationTracker {
 
     private Aktivnost mActivity;
     private Context mContext;
 
     private int lap;
+    private GoogleMap mMap;
+    private boolean isFirstLocation = true;
 
     public ActivityTracker(Context context) {
-        super(context);
+
+        super(context, ActivityTracker.GetDefaultSettings());
+
+        //OVO mora biti ma da ne vidim point pa ostavljam prazno
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+
+        }
+
         mContext = context;
-        mActivity = new Aktivnost();
 
-        this.executeService(this);
-    }
-
-
-
-    public void Start(String name, int typeId, boolean isWithComment){
-
-        this.executeService(this);
-        BusProvider.getInstance().register(this);
-
-        mActivity.setName(name);
-
-        mActivity.setStart_time(getCurrentMilis());
-        mActivity.setType_id(typeId);
-
-        if(!isWithComment){
-            if(mActivity.insert() > 0){
-                super.startLocationUpdates();
-            } else {
-                throw new IllegalStateException("Activity not saved");
-            }
-        }
-    }
-
-    public void Start(String name, String comment, int typeId){
-
-        this.Start(name, typeId, true);
-        mActivity.setComment(comment);
-
-        if(mActivity.insert() > 0){
-            super.startLocationUpdates();
-        } else {
-            throw new IllegalStateException("Activity not saved");
-        }
-    }
-
-    public void Stop(){
-
-        this.stopLocationUpdates();
-        BusProvider.getInstance().unregister(this);
-
-        long time = getCurrentMilis() - mActivity.getStart_time();
-        mActivity.setTime(time);
-        mActivity.setDistance(getDistance());
-        mActivity.setAvg_cadence(getAvgCadence());
-        mActivity.setAvg_hr(getAvgHr());
-        mActivity.setAvg_hr(getMaxHr());
-        mActivity.save();
     }
 
     @Override
-    public void onLocationUpdate(android.location.Location location, Address address) {
+    public void onLocationFound(@NonNull android.location.Location location) {
 
-        if(mActivity.getId() > 0){
+        //If distance is zero just continue don't use resources
+        if((mActivity.getId() > 0 && getLastDistance(location) > 0) || isFirstLocation){
 
-            Toast.makeText(mContext, "Adresa: " + address.toString(), Toast.LENGTH_LONG).show();
+            isFirstLocation = false;
+
+            //if first last distance in range of 4m it is a lap
+            double dist = getFirstLastDistance(location);
+            if(dist < 4.0 && dist > 0) lap++;
 
             Location eLocation = new Location();
 
@@ -104,16 +83,73 @@ public class ActivityTracker extends SamLocationRequestService implements SamLoc
 
             eLocation.setLatitude(location.getLatitude());
             eLocation.setLongitude(location.getLongitude());
-            eLocation.setTime(getCurrentMilis());
+
+            setLocation(new LatLng(eLocation.getLatitude(), eLocation.getLongitude()));
+
+            eLocation.setTime(location.getTime());
             eLocation.setAktivnost(this.mActivity);
 
-            //TODO: calculate lap
             eLocation.setLap(lap);
 
             eLocation.setActivity_id(this.mActivity.getId());
 
-            eLocation.save();
+            mActivity.getLocationList().add(eLocation);
+
+            mActivity.save();
         }
+    }
+
+    @Override
+    public void onTimeout() {
+        Toast.makeText(mContext, "Location tracker timeouts", Toast.LENGTH_LONG).show();
+    }
+
+
+    public void Start(String name, String comment, int typeId){
+
+        //OVO mora biti ma da ne vidim point pa ostavljam prazno
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+
+        }
+
+        mActivity = new Aktivnost();
+
+        isFirstLocation = true;
+
+        lap = 1;
+
+        mActivity.setName(name);
+
+        mActivity.setStart_time(getCurrentMilis());
+        mActivity.setType_id(typeId);
+        mActivity.setComment(comment);
+
+        if(mActivity.insert() > 0){
+            this.startListening();
+        } else {
+            throw new IllegalStateException("Activity not saved");
+        }
+    }
+
+    public void Stop(){
+
+
+        try {
+            this.stopListening();
+        } catch (SecurityException sex){
+            throw sex;
+        }
+
+        BusProvider.getInstance().unregister(this);
+
+        mActivity.setTime(getDuration());
+        mActivity.setDistance(getDistance());
+        mActivity.setAvg_cadence(getAvgCadence());
+        mActivity.setAvg_hr(getAvgHr());
+        mActivity.setAvg_hr(getMaxHr());
+        mActivity.save();
     }
 
     public long getCurrentMilis() {
@@ -121,22 +157,6 @@ public class ActivityTracker extends SamLocationRequestService implements SamLoc
         DateTime dt = DateTime.now();
         return dt.getMillis();
 
-    }
-
-    public double getDistance() {
-        List<Location> locations = mActivity.getLocationList();
-
-        Location first = locations.get(0);
-        Location last = locations.get(locations.size() - 1);
-
-
-        float[] results = new float[3];
-        android.location.Location.distanceBetween(first.getLatitude(), first.getLongitude(),
-                last.getLatitude(), last.getLongitude(), results);
-
-        //We are only using distance for now
-        //On positions 1 and 2 are bearings (start and stop)
-        return results[0];
     }
 
     public double getAvgCadence() {
@@ -184,5 +204,113 @@ public class ActivityTracker extends SamLocationRequestService implements SamLoc
         }
 
         return max;
+    }
+
+
+    //Setting path we are running dynamically because if somebody needs to check route when running
+    private boolean setLocation(LatLng current){
+
+        List<Location> locations = mActivity.getLocationList();
+
+        int locCount = locations.size();
+
+        if(locCount == 0){
+            //adding start
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(current));
+            mMap.addMarker(new MarkerOptions().position(current));
+        }
+
+        if(mMap == null || locCount < 1) return false;
+
+        Location prevLocation = locations.get(locCount - 1);
+        LatLng prev = new LatLng(prevLocation.getLatitude(), prevLocation.getLongitude());
+
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(current, 16);
+        mMap.animateCamera(update);
+        mMap.addPolyline((new PolylineOptions())
+                .add(prev, current).width(6).color(Color.BLUE)
+                .visible(true));
+
+        return true;
+    }
+
+    public double getLastDistance(android.location.Location curr) {
+        List<Location> locations = mActivity.getLocationList();
+
+        int locCount = locations.size();
+
+        if(locCount < 1) return -1;
+
+        Location prev = locations.get(locCount - 1);
+
+        float[] results = new float[3];
+        android.location.Location.distanceBetween(prev.getLatitude(), prev.getLongitude(),
+                curr.getLatitude(), curr.getLongitude(), results);
+
+        //We are only using distance for now
+        //On positions 1 and 2 are bearings (start and stop)
+        return results[0];
+    }
+
+    public double getFirstLastDistance(android.location.Location last) {
+        List<Location> locations = mActivity.getLocationList();
+
+        int locCount = locations.size();
+
+        if(locCount < 1) return -1;
+
+        Location first = locations.get(0);
+
+        float[] results = new float[3];
+        android.location.Location.distanceBetween(first.getLatitude(), first.getLongitude(),
+                last.getLatitude(), last.getLongitude(), results);
+
+        //We are only using distance for now
+        //On positions 1 and 2 are bearings (start and stop)
+        return results[0];
+    }
+
+    public double getDistance() {
+        List<Location> locations = mActivity.getLocationList();
+
+        double dist = 0;
+
+        for (int i = 0; i < locations.size() - 1; i++){
+            Location first = locations.get(i);
+            Location second = locations.get(i + 1);
+
+            float[] results = new float[3];
+            android.location.Location.distanceBetween(first.getLatitude(), first.getLongitude(),
+                    second.getLatitude(), second.getLongitude(), results);
+
+            //We are only using distance for now
+            //On positions 1 and 2 are bearings (start and stop)
+            dist += results[0];
+        }
+
+        return dist;
+    }
+
+    public void setmMap(GoogleMap mMap) {
+        this.mMap = mMap;
+    }
+
+    private static TrackerSettings GetDefaultSettings() {
+        return new TrackerSettings()
+                .setUseGPS(true)
+                .setUseNetwork(true)
+                .setUsePassive(true)
+                .setTimeBetweenUpdates(2 * 1000)
+                .setMetersBetweenUpdates(1);
+    }
+
+    public long getDuration() {
+        List<Location> locations = mActivity.getLocationList();
+
+        int locCount = locations.size();
+
+        if(locCount < 2) return  0;
+
+        return locations.get(locCount - 1).getTime() - locations.get(0).getTime();
     }
 }

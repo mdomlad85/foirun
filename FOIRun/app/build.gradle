@@ -40,6 +40,7 @@ dependencies {
     wearApp project(':wear')
 
     compile 'com.github.kingsammalik:SamLocationAndGeocoding:1.1.0'
+    compile 'com.github.quentin7b:android-location-tracker:3.2'
 
     compile 'com.google.android.gms:play-services-auth:9.0.0'
     compile 'com.google.android.gms:play-services-wearable:9.4.0'

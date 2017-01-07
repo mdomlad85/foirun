@@ -8,37 +8,19 @@
     android:orientation="vertical"
     tools:context=".MainActivity" >
 
-    <RelativeLayout
-        android:id="@+id/gpsinfo"
-        android:layout_width="fill_parent"
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_above="@+id/start_buttons" >
+        android:id="@+id/map"
+        tools:context=".MainActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment" />
 
-        <TextView
-            android:id="@+id/gps_info_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/GPS_satellites" />
-
-        <TextView
-            android:id="@+id/gps_info1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/gps_info_text" />
-
-        <TextView
-            android:id="@+id/gps_info2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/gps_info1" />
-        <TextView
-            android:id="@+id/hr_info"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/gps_info2"
-            android:gravity="center" />
-    </RelativeLayout>
+    <fragment android:name="hr.foi.air.foirun.ui.StartActivityFragment"
+        android:id="@+id/startactivity_fragment"
+        tools:context=".MainActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:id="@+id/start_buttons"
@@ -54,7 +36,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/btn_green"
             android:enabled="true"
-            android:text="@string/Start_GPS"
+            android:text="@string/Start_Activity"
             android:layout_weight="0.8"
             android:drawableRight="@drawable/ic_av_play_arrow"
             android:drawablePadding="-32dp" />

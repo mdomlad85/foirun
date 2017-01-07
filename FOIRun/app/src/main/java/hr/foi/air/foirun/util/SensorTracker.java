@@ -2,17 +2,17 @@ package hr.foi.air.foirun.util;
 
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Random;
 
-import hr.foi.air.foirun.MainActivity;
+import hr.foi.air.foirun.R;
 import hr.foi.air.foirun.data.DataEntry;
 import hr.foi.air.foirun.data.Sensor;
 import hr.foi.air.foirun.data.SensorDataPoint;
@@ -28,20 +28,23 @@ public class SensorTracker {
     private Sensor sensor;
     private float spread;
 
-
     private Realm mRealm;
     private String mAndroidId;
 
     private Activity mActivity;
 
+    private TextView mHrTxt;
 
     public SensorTracker(long sensorId, Activity activity) {
         mActivity = activity;
-        sensor = RemoteSensorManager.getInstance(mActivity).getSensor(android.hardware.Sensor.TYPE_HEART_RATE);
+        sensor = RemoteSensorManager.getInstance(mActivity).getSensor(sensorId);
+        mHrTxt = (TextView) mActivity.findViewById(R.id.hr_value_text);
     }
 
-
     private void initialiseSensorData() {
+
+        if(sensor == null) return;
+
         spread = sensor.getMaxValue() - sensor.getMinValue();
         LinkedList<SensorDataPoint> dataPoints = sensor.getDataPoints();
 
@@ -80,14 +83,21 @@ public class SensorTracker {
 
         mRealm = Realm.getInstance(mActivity);
         mAndroidId = Settings.Secure.getString(mActivity.getContentResolver(), Settings.Secure.ANDROID_ID);
+
+        Attach();
     }
 
     public void Attach() {
         BusProvider.getInstance().register(this);
+
+        Random rnd = new Random(80);
+        String txt = String.valueOf(rnd.nextInt(150));
+        mHrTxt.setText(txt);
     }
 
     public void Detach() {
         BusProvider.getInstance().unregister(this);
+        mHrTxt.setText("?");
     }
 
     @Subscribe
@@ -126,7 +136,6 @@ public class SensorTracker {
             }
         }
     }
-
 
     @Subscribe
     public void onSensorRangeEvent(SensorRangeEvent event) {

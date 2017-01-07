@@ -42,4 +42,12 @@ public class ActivityType extends BaseModel {
     }
 
     public String getName() { return name; }
+
+    public static ActivityType getByName(String mTypeName) {
+
+        return new Select().from(ActivityType.class)
+                .where(ActivityType_Table.name.eq(mTypeName))
+                .querySingle();
+
+    }
 }

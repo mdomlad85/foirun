@@ -5,12 +5,22 @@
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
-    <uses-feature android:name="android.hardware.location" android:required="true" /> <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+    <permission-group
+        android:name="android.permission-group.LOCATION"
+        android:label="LOCATION" />
+
+    <uses-feature
+        android:name="android.hardware.location"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -26,15 +36,26 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".util.SensorReceiverService"
+        <service
+            android:name=".util.SensorReceiverService"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
-                <data android:scheme="wear" android:host="*" />
+
+                <data
+                    android:host="*"
+                    android:path="*"
+                    android:scheme="*" />
             </intent-filter>
         </service>
+
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDU3IPx2_rAH0uBYYtXgp2NoCTRUnyqMHc"/>
+
     </application>
 
 </manifest>
