@@ -13,7 +13,7 @@ import hr.foi.air.database.entities.ActivityType;
 @Database(name = FoiDatabase.NAME, version = FoiDatabase.VERSION)
 public class FoiDatabase {
     public static final String NAME = "foirun";
-    public static final int VERSION = 4;
+    public static final int VERSION = 5;
 
     public static void FillActivityTracker() {
 
@@ -23,12 +23,18 @@ public class FoiDatabase {
 
         if(types.size() == strTypes.length) return;
 
-        for (ActivityType type : types) {
-            for (String str: strTypes) {
-                if(!str.equals(type.getName())){
-                    new ActivityType(str).save();
+        boolean exists = false;
+        for (String str : strTypes) {
+            for (ActivityType type: types) {
+                if(str.equals(type.getName())){
+                    exists = true;
                 }
             }
+
+            if(!exists){
+                new ActivityType(str).save();
+            }
+            exists = false;
         }
     }
 }
