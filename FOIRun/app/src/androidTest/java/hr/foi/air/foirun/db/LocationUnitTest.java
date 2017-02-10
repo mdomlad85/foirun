@@ -17,7 +17,7 @@ public class LocationUnitTest {
     public void insert_Location() throws Exception {
         Context ctx = InstrumentationRegistry.getTargetContext();
         FlowManager.init(new FlowConfig.Builder(ctx).build());
-        User user = new User("mkapustic", "mkapustic@gmail.com", "marko985", false);
+        User user = new User("mkapustic", "mkapustic@gmail.com", "marko985", false, null, null, 0, 0, 0);
         long insert = user.insert();
 
         Assert.assertTrue(insert > 0);

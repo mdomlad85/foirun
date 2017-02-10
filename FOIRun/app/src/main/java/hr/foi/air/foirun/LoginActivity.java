@@ -1,9 +1,14 @@
 package hr.foi.air.foirun;
 
 
+import android.*;
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,7 +58,10 @@ public class LoginActivity extends AppCompatActivity {
         mEmail = (AutoCompleteTextView) findViewById(R.id.email);
         mPassword = (EditText) findViewById(R.id.password);
 
-// Configure sign-in to request the user's ID, email address, and basic
+        if(checkLocationPermission() == false) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -93,7 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                 User existingUser = User.getByEmail(email);
 
                 boolean isValid = true;
-                String msg = "";
+                String msg;
                 if(existingUser != null){
                     if(!existingUser.isValid(password)){
                         msg = "Combination of username and password is wrong";
@@ -102,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                         msg = "You are sucessfully logged in";
                     }
                 } else {
-                    new User(username, email, password, false).insert();
+                    new User(username, email, password, false, null, null, 0, 0, 0).insert();
                     msg = "You are sucessfully registered";
 
                 }
@@ -122,6 +130,29 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+    public boolean checkLocationPermission()
+    {
+        String permission = "android.permission.ACCESS_FINE_LOCATION";
+        int res = this.checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
+    }
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -155,7 +186,7 @@ public class LoginActivity extends AppCompatActivity {
             String mail = acct.getEmail();
 
             if(User.getByMailName(mail) == null){
-                new User(username, mail, token, true).save();
+                new User(username, mail, token, true, null, null, 0, 0, 0).save();
             }
 
             User user = User.getByMailName(mail);

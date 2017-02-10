@@ -27,6 +27,12 @@
         tools:context=".MainActivity"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
 
+    <fragment android:name="hr.foi.air.foirun.fragments.UserProfileFragment"
+        android:id="@+id/userProfile_fragment"
+        tools:context=".MainActivity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <fragment android:name="hr.foi.air.foirun.fragments.StartActivityFragment"
         android:id="@+id/startactivity_fragment"
         tools:context=".MainActivity"
@@ -55,7 +61,17 @@
             android:enabled="true"
             android:text="@string/Start_Activity"
             android:layout_weight="0.8"
-            android:drawableRight="@drawable/ic_av_play_arrow"
+            android:drawablePadding="-32dp" />
+
+        <Button
+            android:id="@+id/userProfile_button"
+            style="@style/ButtonText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_green"
+            android:enabled="true"
+            android:text="@string/User_Profile"
+            android:layout_weight="0.8"
             android:drawablePadding="-32dp" />
 
         <FrameLayout

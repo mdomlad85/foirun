@@ -2,6 +2,7 @@ package hr.foi.air.database.entities;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
@@ -9,6 +10,7 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.Update;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.List;
@@ -39,7 +41,22 @@ public class User extends BaseModel {
     @Column
     boolean google;
 
-    public User(String name, String email, String token, boolean isGoogle) {
+    @Column
+    String realname;
+
+    @Column
+    String lastname;
+
+    @Column
+    int age;
+
+    @Column
+    int height;
+
+    @Column
+    int weight;
+
+    public User(String name, String email, String token, boolean isGoogle, String realname, String lastname, int age, int height, int weight) {
         this.name = name;
         this.email = email;
 
@@ -50,6 +67,16 @@ public class User extends BaseModel {
         }
 
         this.google = isGoogle;
+
+        this.realname = realname;
+
+        this.lastname = lastname;
+
+        this.age = age;
+
+        this.height =  height;
+
+        this.weight = weight;
     }
 
     public User() {
@@ -88,6 +115,22 @@ public class User extends BaseModel {
         return user;
     }
 
+    public static void updateUser(int id, String username, String realname, String lastname, String email, int age
+    , int height, int weight){
+
+        new Update(User.class)
+                .set(User_Table.name.eq(username),
+                        User_Table.realname.eq(realname),
+                        User_Table.lastname.eq(lastname),
+                        User_Table.email.eq(email),
+                        User_Table.age.eq(age),
+                        User_Table.height.eq(height),
+                        User_Table.weight.eq(weight))
+                .where(User_Table.id.is(id))
+                .execute();
+
+    }
+
     public static boolean isValid(String name, String password){
         User user = User.getByName(name);
 
@@ -97,12 +140,14 @@ public class User extends BaseModel {
 
         String hash = HashHelper.sha1Hash(password);
 
-        return user != null  && user.password == hash;
+        return user != null  && user.password.equals(hash);
     }
 
     public int getId() {
         return id;
     }
+
+    public void setId(int id) {this.id = id; }
 
     public String getName() {
         return name;
@@ -146,5 +191,43 @@ public class User extends BaseModel {
 
     public boolean isValid(String password) {
         return HashHelper.sha1Hash(password).equals(this.password);
+    }
+
+    public String getRealname() {
+        return realname;
+    }
+
+    public void setRealname(String realname) {
+        this.realname = realname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public int getAge() {return age; }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 }
