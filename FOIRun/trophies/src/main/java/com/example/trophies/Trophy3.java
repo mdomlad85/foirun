@@ -8,15 +8,12 @@ import com.eminayar.panter.PanterDialog;
  * Created by Matej on 06/08/2017.
  */
 
-public class Trophy2 implements Trophy {
-    //5 workouts done
-
-
+public class Trophy3 implements Trophy {
     @Override
     public void showDialog(Context context) {
         new PanterDialog(context)
                 .setTitle("Congratulations")
-                .setMessage("Congrats on 5 workouts")
+                .setMessage("Congrats your record distance covered.")
                 .isCancelable(false)
                 .show();
     }

@@ -5,7 +5,7 @@ import android.content.Context;
 import com.eminayar.panter.PanterDialog;
 
 /**
- * Created by mariofil on 06/08/2017.
+ * Created by Matej on 06/08/2017.
  */
 
 public class Trophy1 implements Trophy {

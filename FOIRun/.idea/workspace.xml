@@ -19,17 +19,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c65bf09f-41f6-4e8e-8445-f4a8ea118445" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy2.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/NumberOfActivitiesEvent.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/SaveDistanceEvent.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy3.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/RecordDistanceEvent.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build.gradle" afterPath="$PROJECT_DIR$/app/build.gradle" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/MainActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/util/ActivityTracker.java" afterPath="$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/util/ActivityTracker.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/database/src/main/java/hr/foi/air/database/FoiDatabase.java" afterPath="$PROJECT_DIR$/database/src/main/java/hr/foi/air/database/FoiDatabase.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trophies/build.gradle" afterPath="$PROJECT_DIR$/trophies/build.gradle" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy.java" afterPath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy1.java" afterPath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy2.java" afterPath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy2.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/NumberOfActivitiesEvent.java" afterPath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/NumberOfActivitiesEvent.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/SaveDistanceEvent.java" afterPath="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/SaveDistanceEvent.java" />
     </list>
     <ignored path="FOIRun.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -61,26 +60,60 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="337">
-              <caret line="157" column="33" selection-start-line="157" selection-start-column="33" selection-end-line="157" selection-end-column="33" />
+            <state relative-caret-position="456">
+              <caret line="207" column="5" selection-start-line="207" selection-start-column="5" selection-end-line="207" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#7651#7700#0" expanded="true" />
-                <element signature="e#7728#7776#0" expanded="true" />
+                <element signature="e#7889#7938#0" expanded="true" />
+                <element signature="e#7966#8014#0" expanded="true" />
                 <element signature="method#notifyUSerForNewSensor#0;class#MainActivity#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ActivityTracker.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Trophy3.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy3.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="15" column="67" selection-start-line="15" selection-start-column="67" selection-end-line="15" selection-end-column="67" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Trophy2.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy2.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="16" column="8" selection-start-line="16" selection-start-column="8" selection-end-line="20" selection-end-column="24" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Aktivnost.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/database/src/main/java/hr/foi/air/database/entities/Aktivnost.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="465">
+              <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ActivityTracker.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/util/ActivityTracker.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="406">
-              <caret line="151" column="0" selection-start-line="151" selection-start-column="0" selection-end-line="151" selection-end-column="0" />
+            <state relative-caret-position="349">
+              <caret line="160" column="35" selection-start-line="160" selection-start-column="35" selection-end-line="160" selection-end-column="35" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="method#onTimeout#0;class#ActivityTracker#0" expanded="false" />
@@ -6234,8 +6267,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/events/SensorUpdatedEvent.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/events/TagAddedEvent.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/data/DataEntry.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/util/SensorFragment.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_login.xml" />
@@ -6266,7 +6297,6 @@
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/model/Items.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/fragments/StopActivityFragment.java" />
-        <option value="$PROJECT_DIR$/database/src/main/java/hr/foi/air/database/entities/Aktivnost.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/aktivnost_row.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/adapter/AktivnostListAdapter.java" />
@@ -6275,14 +6305,17 @@
         <option value="$PROJECT_DIR$/app/build/intermediates/manifests/full/debug/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/trophies/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/LoginActivity.java" />
-        <option value="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/SaveDistanceEvent.java" />
         <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/database/src/main/java/hr/foi/air/database/FoiDatabase.java" />
-        <option value="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/NumberOfActivitiesEvent.java" />
         <option value="$PROJECT_DIR$/trophies/build.gradle" />
         <option value="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy.java" />
         <option value="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy1.java" />
         <option value="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy2.java" />
+        <option value="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/NumberOfActivitiesEvent.java" />
+        <option value="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/SaveDistanceEvent.java" />
+        <option value="$PROJECT_DIR$/database/src/main/java/hr/foi/air/database/entities/Aktivnost.java" />
+        <option value="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/RecordDistanceEvent.java" />
+        <option value="$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy3.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/MainActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/util/ActivityTracker.java" />
       </list>
@@ -6404,6 +6437,28 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="trophies" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="FOIRun" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trophies" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trophies" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="events" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -7011,7 +7066,14 @@
       <option name="project" value="LOCAL" />
       <updated>1502014078743</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Trophies 1 (for 10 km ) and 2 (for 5 workouts).">
+      <created>1502026885854</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1502026885854</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -7056,7 +7118,7 @@
       <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3997773" sideWeight="0.52558637" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3296146" sideWeight="0.47867805" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296146" sideWeight="0.47867805" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.4978678" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.4978678" order="7" side_tool="false" content_ui="tabs" />
@@ -7064,6 +7126,7 @@
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25239617" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3296146" sideWeight="0.4978678" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
@@ -7081,7 +7144,6 @@
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32960597" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32962137" sideWeight="0.4978678" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -7097,7 +7159,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Trophies setup." />
-    <option name="LAST_COMMIT_MESSAGE" value="Trophies setup." />
+    <MESSAGE value="Trophies 1 (for 10 km ) and 2 (for 5 workouts)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Trophies 1 (for 10 km ) and 2 (for 5 workouts)." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -7204,9 +7267,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$USER_HOME$/AppData/Local/Android/Sdk/platforms/android-25/android.jar!/java/lang/reflect/Method.class" />
-    <entry file="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.github.quentin7b/android-location-tracker/3.2/jars/classes.jar!/fr/quentinklein/slt/TrackerSettings.class" />
-    <entry file="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.github.quentin7b/android-location-tracker/3.2/jars/classes.jar!/fr/quentinklein/slt/LocationTracker.class" />
     <entry file="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.github.quentin7b/android-location-tracker/3.1/jars/classes.jar!/fr/quentinklein/slt/LocationTracker.class" />
     <entry file="file://$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/util/SensorTracker.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -7444,14 +7504,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/SaveDistanceEvent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="14" column="15" selection-start-line="14" selection-start-column="15" selection-end-line="14" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/events/BusProvider.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -7464,14 +7516,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="615">
           <caret line="52" column="0" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/database/src/main/java/hr/foi/air/database/entities/Aktivnost.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="50" column="16" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="16" />
           <folding />
         </state>
       </provider>
@@ -7500,62 +7544,104 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy1.java">
+    <entry file="file://$PROJECT_DIR$/trophies/proguard-rules.pro">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="32" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy2.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="32" selection-start-line="16" selection-start-column="32" selection-end-line="16" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/NumberOfActivitiesEvent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="0" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+        <state relative-caret-position="30">
+          <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="207">
-          <caret line="9" column="31" selection-start-line="9" selection-start-column="31" selection-end-line="9" selection-end-column="31" />
+        <state relative-caret-position="75">
+          <caret line="5" column="14" selection-start-line="5" selection-start-column="14" selection-end-line="5" selection-end-column="14" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/MainActivity.java">
+    <entry file="file://$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy1.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="337">
-          <caret line="157" column="33" selection-start-line="157" selection-start-column="33" selection-end-line="157" selection-end-column="33" />
+        <state relative-caret-position="105">
+          <caret line="7" column="14" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#7651#7700#0" expanded="true" />
-            <element signature="e#7728#7776#0" expanded="true" />
-            <element signature="method#notifyUSerForNewSensor#0;class#MainActivity#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/SaveDistanceEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="14" selection-start-line="3" selection-start-column="14" selection-end-line="3" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/NumberOfActivitiesEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="14" selection-start-line="3" selection-start-column="14" selection-end-line="3" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/database/src/main/java/hr/foi/air/database/entities/Aktivnost.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/events/RecordDistanceEvent.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="8" column="0" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy2.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="16" column="8" selection-start-line="16" selection-start-column="8" selection-end-line="20" selection-end-column="24" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trophies/src/main/java/com/example/trophies/Trophy3.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="67" selection-start-line="15" selection-start-column="67" selection-end-line="15" selection-end-column="67" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/util/ActivityTracker.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="406">
-          <caret line="151" column="0" selection-start-line="151" selection-start-column="0" selection-end-line="151" selection-end-column="0" />
+        <state relative-caret-position="349">
+          <caret line="160" column="35" selection-start-line="160" selection-start-column="35" selection-end-line="160" selection-end-column="35" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="method#onTimeout#0;class#ActivityTracker#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/hr/foi/air/foirun/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="456">
+          <caret line="207" column="5" selection-start-line="207" selection-start-column="5" selection-end-line="207" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#7889#7938#0" expanded="true" />
+            <element signature="e#7966#8014#0" expanded="true" />
+            <element signature="method#notifyUSerForNewSensor#0;class#MainActivity#0" expanded="false" />
           </folding>
         </state>
       </provider>

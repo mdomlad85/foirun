@@ -20,7 +20,9 @@ import com.eminayar.panter.PanterDialog;
 import com.example.trophies.Trophy;
 import com.example.trophies.Trophy1;
 import com.example.trophies.Trophy2;
+import com.example.trophies.Trophy3;
 import com.example.trophies.events.NumberOfActivitiesEvent;
+import com.example.trophies.events.RecordDistanceEvent;
 import com.example.trophies.events.SaveDistanceEvent;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -117,16 +119,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
 
-
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
     @OnClick(R.id.show_myactivies)
-    public void onShowActivities(View view){
+    public void onShowActivities(View view) {
 
-        if(view.getId() == R.id.show_myactivies){
+        if (view.getId() == R.id.show_myactivies) {
 
-            int uid = getIntent().getIntExtra("uid",  0);
+            int uid = getIntent().getIntExtra("uid", 0);
             List<Aktivnost> aktivnosti = Aktivnost.getByUserId(uid);
 
             AktivnostListAdapter adapter = new AktivnostListAdapter(this, aktivnosti);
@@ -144,7 +145,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onBackPressed() {
 
-        if(isInListView){
+        if (isInListView) {
 
             scoreboard.setVisibility(View.INVISIBLE);
             startFragment.getView().setVisibility(View.VISIBLE);
@@ -170,7 +171,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if (km >= 10000) {
             double remainder = km % 10000;
 
-            if (km >= (lastshown+10000)){
+            if (km >= (lastshown + 10000)) {
                 //showdialog, save data
                 editor.putLong("last_shown", ((long) km));
                 //editor.putLong("to10km", ((long) remainder));
@@ -179,38 +180,32 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
 
-
         }
 
-      /*  if (Math.abs(mSettings.getLong("distance_run", 0) - event.getDistanceRun()) >= 1000  ||  mSettings.getLong("distance_run", 0) + event.getDistanceRun() >=1000  ){
-            show1stTrophyMessage();
-        }*/
+
+    }
 
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(RecordDistanceEvent event) /* Do something */ {
+        SharedPreferences mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = mSettings.edit();
+        long maxDistance = 0;
+        long maxSaved = mSettings.getLong("max_distance", 0);
 
+        for (Aktivnost a : Aktivnost.getAll()) {
+            if (a.getDistance() >= maxDistance) {
+                maxDistance = (long) a.getDistance();
+            }
+        }
+        editor.putLong("max_distance", maxDistance);
+        editor.apply();
 
+        if (maxDistance > maxSaved) {
+            show3rdTrophyMessage();
+        }
 
-
-
-
-       /* Log.d("Distance" , String.valueOf(km));
-
-        double hmm = km/10000;
-
-        Log.d("double hh", String.valueOf(hmm));
-        Log.d("int hh", String.valueOf(((int) hmm)));
-
-
-
-        Log.d("shared prefs", String.valueOf(mSettings.getLong("distance_run", 0)));*/
-
-        /*new PanterDialog(this)
-                .setTitle("Congratulations")
-                .setMessage("Congrats on running 10 km")
-                .isCancelable(false)
-                .show();*/
-
-    };
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(NumberOfActivitiesEvent event) {
@@ -218,21 +213,26 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         SharedPreferences.Editor editor = mSettings.edit();
 
 
-        if (Aktivnost.getAll().size() - mSettings.getLong("activities_number", 0) >=5){
+        if (Aktivnost.getAll().size() - mSettings.getLong("activities_number", 0) >= 5) {
             show2stTrophyMessage();
             editor.putLong("activities_number", Aktivnost.getAll().size());
             editor.apply();
         }
     }
 
-    public void show1stTrophyMessage(){
+    public void show1stTrophyMessage() {
         Trophy trophy1 = new Trophy1();
         trophy1.showDialog(this);
     }
 
-    public void show2stTrophyMessage(){
+    public void show2stTrophyMessage() {
         Trophy trophy2 = new Trophy2();
         trophy2.showDialog(this);
+    }
+
+    public void show3rdTrophyMessage() {
+        Trophy trophy3 = new Trophy3();
+        trophy3.showDialog(this);
     }
 
     @Override
@@ -249,14 +249,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @OnClick(R.id.start_button)
-    public void onStartActivity(View view){
+    public void onStartActivity(View view) {
 
-        if(view.getId() == R.id.start_button){
+        if (view.getId() == R.id.start_button) {
 
             String start = getResources().getString(R.string.Start_Activity);
             String stop = getResources().getString(R.string.Stop_Activity);
 
-            if(startBtn.getText().toString().equals(start)){
+            if (startBtn.getText().toString().equals(start)) {
                 this.Start(stop);
             } else {
                 this.Stop(start);
@@ -265,13 +265,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @OnClick(R.id.save_activity)
-    public void onSaveActivity(View view){
+    public void onSaveActivity(View view) {
 
-        if(view.getId() == R.id.save_activity){
+        if (view.getId() == R.id.save_activity) {
 
             PrepearePodium();
 
-            int uid = getIntent().getIntExtra("uid",  0);
+            int uid = getIntent().getIntExtra("uid", 0);
 
             mTracker.getAktivnost().setUser_id(uid);
             mTracker.getAktivnost().save();
@@ -283,9 +283,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @OnClick(R.id.delete_activity)
-    public void onDeleteActivity(View view){
+    public void onDeleteActivity(View view) {
 
-        if(view.getId() == R.id.delete_activity){
+        if (view.getId() == R.id.delete_activity) {
 
             PrepearePodium();
 
@@ -327,7 +327,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void Start(String stop) {
 
-        if(!startFragment.isValid()){
+        if (!startFragment.isValid()) {
             Toast.makeText(this, "You must enter title.", Toast.LENGTH_LONG).show();
             return;
         }
