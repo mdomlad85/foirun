@@ -5,6 +5,7 @@ import com.raizlabs.android.dbflow.annotation.Database;
 import java.util.List;
 
 import hr.foi.air.database.entities.ActivityType;
+import hr.foi.air.database.entities.Aktivnost;
 
 /**
  * Created by Marko on 20.12.2016..
@@ -37,4 +38,21 @@ public class FoiDatabase {
             exists = false;
         }
     }
+
+    public static void FillFakeData(){
+        Aktivnost aktivnost = new Aktivnost();
+        aktivnost.setDistance(10000);
+        aktivnost.setName("fake 1");
+        aktivnost.save();
+
+        aktivnost = new Aktivnost();
+        aktivnost.setDistance(12333);
+        aktivnost.setName("fake 2");
+        aktivnost.save();
+
+    }
+
+   /* public static void FillActivities(){
+        String[]
+    }*/
 }

@@ -1,8 +1,11 @@
 package hr.foi.air.foirun;
 
 
+import android.*;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -37,7 +40,10 @@ public class LoginActivity extends AppCompatActivity {
     Button mBtnGoogleSign;
     AutoCompleteTextView mEmail;
     EditText mPassword;
-
+    private static final String[] INITIAL_PERMS = {
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+    };
+    private static final int initial_request = 1337;
 
 
     @Override
@@ -45,6 +51,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPerm();
+        }
 
         FlowManager.init(new FlowConfig.Builder(this).build());
 
@@ -170,6 +179,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestPerm() {
+        requestPermissions(INITIAL_PERMS, initial_request);
+
+    }
 
 
     }

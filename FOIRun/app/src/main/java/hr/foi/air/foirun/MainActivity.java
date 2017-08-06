@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -87,6 +88,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         JodaTimeAndroid.init(this);
         FlowManager.init(new FlowConfig.Builder(this).build());
         FoiDatabase.FillActivityTracker();
+        FoiDatabase.FillFakeData();
 
         mapFragment.getView().setVisibility(View.INVISIBLE);
         stopFragment.getView().setVisibility(View.INVISIBLE);
@@ -94,6 +96,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         remoteSensorManager = RemoteSensorManager.getInstance(this);
         remoteSensorManager.addTag("HEART_RATE");
+
+
+        double km = 0;
+        for (Aktivnost a : Aktivnost.getAll()) {
+            km += a.getDistance();
+        }
+
+        Log.d("Distance" , String.valueOf(km));
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
