@@ -41,14 +41,16 @@ public class FoiDatabase {
 
     public static void FillFakeData(){
         Aktivnost aktivnost = new Aktivnost();
-        aktivnost.setDistance(10000);
+        aktivnost.setDistance(250);
         aktivnost.setName("fake 1");
         aktivnost.save();
 
         aktivnost = new Aktivnost();
-        aktivnost.setDistance(12333);
+        aktivnost.setDistance(250);
         aktivnost.setName("fake 2");
         aktivnost.save();
+
+
 
     }
 

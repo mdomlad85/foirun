@@ -2,6 +2,9 @@ package hr.foi.air.foirun;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Looper;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,14 +16,24 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.eminayar.panter.PanterDialog;
+import com.example.trophies.Trophy;
+import com.example.trophies.Trophy1;
+import com.example.trophies.Trophy2;
+import com.example.trophies.events.NumberOfActivitiesEvent;
+import com.example.trophies.events.SaveDistanceEvent;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.squareup.otto.Subscribe;
+
 
 import net.danlew.android.joda.JodaTimeAndroid;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +101,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         JodaTimeAndroid.init(this);
         FlowManager.init(new FlowConfig.Builder(this).build());
         FoiDatabase.FillActivityTracker();
-        FoiDatabase.FillFakeData();
+        //FoiDatabase.FillFakeData();
 
         mapFragment.getView().setVisibility(View.INVISIBLE);
         stopFragment.getView().setVisibility(View.INVISIBLE);
@@ -103,7 +116,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             km += a.getDistance();
         }
 
-        Log.d("Distance" , String.valueOf(km));
+
 
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
@@ -140,6 +153,99 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             isInListView = false;
 
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(SaveDistanceEvent event) {/* Do something */
+        SharedPreferences mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = mSettings.edit();
+        double km = 0;
+        for (Aktivnost a : Aktivnost.getAll()) {
+            km += a.getDistance();
+        }
+
+        long lastshown = mSettings.getLong("last_shown", 0);
+        long to10km = mSettings.getLong("to10km", 0);
+
+        if (km >= 10000) {
+            double remainder = km % 10000;
+
+            if (km >= (lastshown+10000)){
+                //showdialog, save data
+                editor.putLong("last_shown", ((long) km));
+                //editor.putLong("to10km", ((long) remainder));
+                editor.apply();
+                show1stTrophyMessage();
+            }
+
+
+
+        }
+
+      /*  if (Math.abs(mSettings.getLong("distance_run", 0) - event.getDistanceRun()) >= 1000  ||  mSettings.getLong("distance_run", 0) + event.getDistanceRun() >=1000  ){
+            show1stTrophyMessage();
+        }*/
+
+
+
+
+
+
+
+
+       /* Log.d("Distance" , String.valueOf(km));
+
+        double hmm = km/10000;
+
+        Log.d("double hh", String.valueOf(hmm));
+        Log.d("int hh", String.valueOf(((int) hmm)));
+
+
+
+        Log.d("shared prefs", String.valueOf(mSettings.getLong("distance_run", 0)));*/
+
+        /*new PanterDialog(this)
+                .setTitle("Congratulations")
+                .setMessage("Congrats on running 10 km")
+                .isCancelable(false)
+                .show();*/
+
+    };
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(NumberOfActivitiesEvent event) {
+        SharedPreferences mSettings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = mSettings.edit();
+
+
+        if (Aktivnost.getAll().size() - mSettings.getLong("activities_number", 0) >=5){
+            show2stTrophyMessage();
+            editor.putLong("activities_number", Aktivnost.getAll().size());
+            editor.apply();
+        }
+    }
+
+    public void show1stTrophyMessage(){
+        Trophy trophy1 = new Trophy1();
+        trophy1.showDialog(this);
+    }
+
+    public void show2stTrophyMessage(){
+        Trophy trophy2 = new Trophy2();
+        trophy2.showDialog(this);
+    }
+
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @OnClick(R.id.start_button)
@@ -261,4 +367,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         //if somebody wanna look where is moving
         mTracker.setmMap(googleMap);
     }
+
+
 }

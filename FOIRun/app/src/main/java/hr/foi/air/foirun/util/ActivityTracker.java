@@ -3,13 +3,17 @@ package hr.foi.air.foirun.util;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 
 import android.graphics.Color;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.widget.Toast;
 
+import com.example.trophies.events.NumberOfActivitiesEvent;
+import com.example.trophies.events.SaveDistanceEvent;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -17,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.greenrobot.eventbus.EventBus;
 import org.joda.time.DateTime;
 
 import java.util.List;
@@ -150,7 +155,19 @@ public class ActivityTracker extends LocationTracker {
         mActivity.setAvg_cadence(getAvgCadence());
         mActivity.setAvg_hr(getAvgHr());
         mActivity.setAvg_hr(getMaxHr());
+
+
+        mActivity.setDistance(2000);
         mActivity.save();
+
+        long km = 0;
+        for (Aktivnost a : Aktivnost.getAll()) {
+            km += a.getDistance();
+        }
+
+        EventBus.getDefault().post(new SaveDistanceEvent(km));
+        EventBus.getDefault().post(new NumberOfActivitiesEvent());
+
     }
 
     public long getCurrentMilis() {
@@ -320,6 +337,6 @@ public class ActivityTracker extends LocationTracker {
     }
 
     public void clearMap() {
-        mMap.clear();
+//        mMap.clear();
     }
 }
