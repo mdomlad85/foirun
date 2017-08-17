@@ -101,16 +101,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mLTracker = new LocationTracker(MainActivity.this);
 
         if(mLTracker.canGetLocation()){
-            double latitude = mLTracker.getLatitude();
-            double longitude = mLTracker.getLongitude();
-            String queryString = String.format(JSONWeatherParser.LATLON_PART, mLTracker.getLatitude(), mLTracker.getLongitude());
+            String queryString = String.format(
+                    JSONWeatherParser.LATLON_PART,
+                    mLTracker.getLatitude(),
+                    mLTracker.getLongitude());
             queryString += String.format(JSONWeatherParser.LANGUAGE_PART, _language);
             queryString += String.format(JSONWeatherParser.API_KEY_PART, _apiKey);
             weatherActivityFragment = (WeatherActivityFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.weatheractivity_fragment);
             weatherActivityFragment.executeTask(queryString);
-            // \n is for new line
-            Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
         } else {
             mLTracker.showSettingsAlert();
         }
@@ -349,7 +348,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         stopFragment.setTimeTxt(mTracker.getAktivnost().getTime());
 
         stopFragment.getView().setVisibility(View.VISIBLE);
-
+        weatherActivityFragment.getView().setVisibility(View.VISIBLE);
     }
 
     private void Start(String stop) {
@@ -374,6 +373,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         mapFragment.getView().setVisibility(View.VISIBLE);
         startFragment.getView().setVisibility(View.INVISIBLE);
+        weatherActivityFragment.getView().setVisibility(View.INVISIBLE);
     }
 
     private void notifyUSerForNewSensor(Sensor sensor) {
