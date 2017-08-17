@@ -42,4 +42,11 @@
     <string name="action_delete_activity">Delete activity</string>
     <string name="show_myactivities">Show my activities</string>
     <string name="go_back" />
+
+    <string name="ow_api_key">73ccdc4bdf0e460c149b9a4ac11844bf</string>
+    <string name="ow_api_language">hr</string>
+    <string name="pressure">Tlak</string>
+    <string name="wind">Vjetar</string>
+    <string name="humidity">Vlaga</string>
+
 </resources>

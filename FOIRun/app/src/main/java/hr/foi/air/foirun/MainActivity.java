@@ -36,6 +36,7 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,14 +52,19 @@ import hr.foi.air.foirun.events.BusProvider;
 import hr.foi.air.foirun.events.NewSensorEvent;
 import hr.foi.air.foirun.fragments.StartActivityFragment;
 import hr.foi.air.foirun.fragments.StopActivityFragment;
+import hr.foi.air.foirun.fragments.WeatherActivityFragment;
 import hr.foi.air.foirun.util.ActivityTracker;
+import hr.foi.air.foirun.util.LocationTracker;
 import hr.foi.air.foirun.util.RemoteSensorManager;
 import hr.foi.air.foirun.util.SensorTracker;
+import hr.foi.air.owf.JSONWeatherParser;
+import hr.foi.air.owf.model.Weather;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private ActivityTracker mTracker;
     private SensorTracker mSTracker;
+    private LocationTracker mLTracker;
     private RemoteSensorManager remoteSensorManager;
 
     @BindView(R.id.show_myactivies)
@@ -79,7 +85,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private SupportMapFragment mapFragment;
     private StartActivityFragment startFragment;
     private StopActivityFragment stopFragment;
+    private WeatherActivityFragment weatherActivityFragment;
     private boolean isInListView;
+    //TODO: move to config
+    private String  _apiKey = "73ccdc4bdf0e460c149b9a4ac11844bf";
+    private String _language = "hr";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +97,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.start);
 
         mTracker = new ActivityTracker(this);
+
+        mLTracker = new LocationTracker(MainActivity.this);
+
+        if(mLTracker.canGetLocation()){
+            double latitude = mLTracker.getLatitude();
+            double longitude = mLTracker.getLongitude();
+            String queryString = String.format(JSONWeatherParser.LATLON_PART, mLTracker.getLatitude(), mLTracker.getLongitude());
+            queryString += String.format(JSONWeatherParser.LANGUAGE_PART, _language);
+            queryString += String.format(JSONWeatherParser.API_KEY_PART, _apiKey);
+            weatherActivityFragment = (WeatherActivityFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.weatheractivity_fragment);
+            weatherActivityFragment.executeTask(queryString);
+            // \n is for new line
+            Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+        } else {
+            mLTracker.showSettingsAlert();
+        }
 
         startFragment = (StartActivityFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.startactivity_fragment);

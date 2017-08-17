@@ -1,1 +1,1 @@
-include ':app', ':database', ':core', ':wear', ':trophies'
+include ':app', ':database', ':core', ':wear', ':trophies', ':open_weather_forecast'
