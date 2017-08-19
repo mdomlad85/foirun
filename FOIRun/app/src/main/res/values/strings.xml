@@ -48,5 +48,12 @@
     <string name="pressure">Tlak</string>
     <string name="wind">Vjetar</string>
     <string name="humidity">Vlaga</string>
+    <string name="action_update">Update</string>
+    <string name="action_save">Save</string>
+    <string name="profileUsername">Username</string>
+    <string name="profileEmail">Email</string>
+    <string name="profileAge">Age</string>
+    <string name="profileHeight">Height</string>
+    <string name="profileWeight">Weight</string>
 
 </resources>
