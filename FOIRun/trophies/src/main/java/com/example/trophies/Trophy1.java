@@ -12,7 +12,7 @@ public class Trophy1 implements Trophy {
 
     //10 km run
     @Override
-    public void showDialog(Context context) {
+    public void showDialog(Context context, String text) {
         new PanterDialog(context)
                 .setTitle("Congratulations")
                 .setMessage("Congrats on running 10 km")

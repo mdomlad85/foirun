@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.trophies.events.NumberOfActivitiesEvent;
 import com.example.trophies.events.RecordDistanceEvent;
 import com.example.trophies.events.SaveDistanceEvent;
+import com.example.trophies.events.TotalDistanceEvent;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -169,6 +170,7 @@ public class ActivityTracker extends LocationTracker {
         EventBus.getDefault().post(new SaveDistanceEvent(km));
         EventBus.getDefault().post(new NumberOfActivitiesEvent());
         EventBus.getDefault().post(new RecordDistanceEvent());
+        EventBus.getDefault().post(new TotalDistanceEvent());
 
     }
 

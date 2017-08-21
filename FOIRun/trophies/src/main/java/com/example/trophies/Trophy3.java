@@ -10,10 +10,10 @@ import com.eminayar.panter.PanterDialog;
 
 public class Trophy3 implements Trophy {
     @Override
-    public void showDialog(Context context) {
+    public void showDialog(Context context, String text) {
         new PanterDialog(context)
                 .setTitle("Congratulations")
-                .setMessage("Congrats your record distance covered.")
+                .setMessage("Congrats, your new record in distance covered.")
                 .isCancelable(false)
                 .show();
     }

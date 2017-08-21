@@ -7,5 +7,5 @@ import android.content.Context;
  */
 
 public interface Trophy {
-    public void showDialog(Context context);
+    public void showDialog(Context context, String text);
 }

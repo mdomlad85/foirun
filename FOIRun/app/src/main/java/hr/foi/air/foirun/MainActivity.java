@@ -21,9 +21,11 @@ import com.example.trophies.Trophy;
 import com.example.trophies.Trophy1;
 import com.example.trophies.Trophy2;
 import com.example.trophies.Trophy3;
+import com.example.trophies.Trophy4;
 import com.example.trophies.events.NumberOfActivitiesEvent;
 import com.example.trophies.events.RecordDistanceEvent;
 import com.example.trophies.events.SaveDistanceEvent;
+import com.example.trophies.events.TotalDistanceEvent;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -205,7 +207,50 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             show3rdTrophyMessage();
         }
 
+
+
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(TotalDistanceEvent event) {
+        long totalDistance = 0;
+
+        for (Aktivnost a : Aktivnost.getAll()) {
+            totalDistance += a.getDistance();
+        }
+
+
+        if (totalDistance >=50 && totalDistance <100){
+            //the rookie
+            show4thTrophyMessage("The rookie");
+        } else if (totalDistance >= 100 && totalDistance < 200) {
+            //the jogger
+            show4thTrophyMessage("The jogger");
+
+        }else if (totalDistance >= 200 && totalDistance < 300) {
+            //the exhausted
+            show4thTrophyMessage("The exhausted");
+
+        }else if (totalDistance >= 300 && totalDistance < 500) {
+            //the road marshal
+            show4thTrophyMessage("The road marshal");
+
+        }else if (totalDistance >= 500 && totalDistance < 750) {
+            //the inexhaustible
+            show4thTrophyMessage("The inexhaustible");
+
+        }else if (totalDistance >= 750 && totalDistance < 1000) {
+            //lord of the road
+            show4thTrophyMessage("Lord of the road");
+
+        }else if (totalDistance >= 1000) {
+            //the unstoppable
+            show4thTrophyMessage("The unstoppable");
+
+        }
+
+    }
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(NumberOfActivitiesEvent event) {
@@ -222,17 +267,22 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void show1stTrophyMessage() {
         Trophy trophy1 = new Trophy1();
-        trophy1.showDialog(this);
+        trophy1.showDialog(this, "");
     }
 
     public void show2stTrophyMessage() {
         Trophy trophy2 = new Trophy2();
-        trophy2.showDialog(this);
+        trophy2.showDialog(this, "");
     }
 
     public void show3rdTrophyMessage() {
         Trophy trophy3 = new Trophy3();
-        trophy3.showDialog(this);
+        trophy3.showDialog(this, "");
+    }
+
+    public void show4thTrophyMessage(String text) {
+        Trophy trophy4 = new Trophy4();
+        trophy4.showDialog(this, text);
     }
 
     @Override
