@@ -1,25 +1,18 @@
 package hr.foi.air.foirun;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.eminayar.panter.PanterDialog;
 import com.example.trophies.Trophy;
 import com.example.trophies.Trophy1;
 import com.example.trophies.Trophy2;
@@ -39,11 +32,7 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.json.JSONException;
-
-import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -63,7 +52,6 @@ import hr.foi.air.foirun.util.LocationTracker;
 import hr.foi.air.foirun.util.RemoteSensorManager;
 import hr.foi.air.foirun.util.SensorTracker;
 import hr.foi.air.owf.JSONWeatherParser;
-import hr.foi.air.owf.model.Weather;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -106,12 +94,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private String  _apiKey = "73ccdc4bdf0e460c149b9a4ac11844bf";
     private String _language = "hr";
 
-    private EditText username;
-    private EditText email;
-    private EditText age;
-    private EditText height;
-    private EditText weight;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,12 +131,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         mapFragment.getMapAsync(this);
 
-        username = (EditText) findViewById(R.id.profile_username);
-        email = (EditText) findViewById(R.id.profile_email);
-        age = (EditText) findViewById(R.id.profile_age);
-        height = (EditText) findViewById(R.id.profile_height);
-        weight = (EditText) findViewById(R.id.profile_weight);
-
         ButterKnife.bind(this);
         JodaTimeAndroid.init(this);
         FlowManager.init(new FlowConfig.Builder(this).build());
@@ -164,7 +140,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getView().setVisibility(View.INVISIBLE);
         stopFragment.getView().setVisibility(View.INVISIBLE);
         profileFragment.getView().setVisibility(View.INVISIBLE);
-        scoreboard.setVisibility(View.INVISIBLE);
 
         remoteSensorManager = RemoteSensorManager.getInstance(this);
         remoteSensorManager.addTag("HEART_RATE");
@@ -192,6 +167,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             scoreboard.setAdapter(adapter);
             scoreboard.setVisibility(View.VISIBLE);
             startFragment.getView().setVisibility(View.INVISIBLE);
+            profileFragment.getView().setVisibility(View.INVISIBLE);
+            weatherActivityFragment.getView().setVisibility(View.INVISIBLE);
             startBtns.setVisibility(View.INVISIBLE);
 
             isInListView = true;
@@ -210,16 +187,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 weatherActivityFragment.getView().setVisibility(View.VISIBLE);
             }
         }
-        else {
-            if (isInListView) {
+        else if (isInListView) {
+            scoreboard.setVisibility(View.INVISIBLE);
+            startFragment.getView().setVisibility(View.VISIBLE);
+            startBtns.setVisibility(View.VISIBLE);
 
-                scoreboard.setVisibility(View.INVISIBLE);
-                startFragment.getView().setVisibility(View.VISIBLE);
-                startBtns.setVisibility(View.VISIBLE);
-
-                isInListView = false;
-
-            }
+            isInListView = false;
         }
     }
 
@@ -233,11 +206,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
         int uid = getIntent().getIntExtra("uid",  0);
 
-        username.setText(User.getById(uid).getName());
-        email.setText(User.getById(uid).getEmail());
-        if(User.getById(uid).getAge() != 0) { age.setText(String.valueOf(User.getById(uid).getAge())); }
-        if(User.getById(uid).getHeight() != 0) { height.setText(String.valueOf(User.getById(uid).getHeight())); }
-        if(User.getById(uid).getWeight() != 0) { weight.setText(String.valueOf(User.getById(uid).getWeight())); }
+        profileFragment.getUsername().setText(User.getById(uid).getName());
+        profileFragment.getEmail().setText(User.getById(uid).getEmail());
+        if(User.getById(uid).getAge() != 0) { profileFragment.getAge().setText(String.valueOf(User.getById(uid).getAge())); }
+        if(User.getById(uid).getHeight() != 0) { profileFragment.getHeight().setText(String.valueOf(User.getById(uid).getHeight())); }
+        if(User.getById(uid).getWeight() != 0) { profileFragment.getWeight().setText(String.valueOf(User.getById(uid).getWeight())); }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -341,24 +314,22 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             cancelClicked();
         }
 
-    }
+        }
 
     public void updateClicked(){
-        username.setEnabled(true);
-        email.setEnabled(true);
-        age.setEnabled(true);
-        height.setEnabled(true);
-        weight.setEnabled(true);
+        profileFragment.getEmail().setEnabled(true);
+        profileFragment.getAge().setEnabled(true);
+        profileFragment.getHeight().setEnabled(true);
+        profileFragment.getWeight().setEnabled(true);
         updateBtn.setText("Cancel");
         saveUserBtn.setClickable(true);
     }
 
     public void cancelClicked(){
-        username.setEnabled(false);
-        email.setEnabled(false);
-        age.setEnabled(false);
-        height.setEnabled(false);
-        weight.setEnabled(false);
+        profileFragment.getEmail().setEnabled(false);
+        profileFragment.getAge().setEnabled(false);
+        profileFragment.getHeight().setEnabled(false);
+        profileFragment.getWeight().setEnabled(false);
         updateBtn.setText("Update");
 
         saveUserBtn.setClickable(false);
@@ -366,17 +337,18 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     @OnClick(R.id.profile_save_button)
     public void onSaveUserChanges(){
-        int uid = getIntent().getIntExtra("uid",  0);
-        String uname = username.getText().toString();
-        String uemail = email.getText().toString();
-        int uage = Integer.valueOf(String.valueOf(age.getText()));
-        int uheight = Integer.valueOf(String.valueOf(height.getText()));
-        int uweight = Integer.valueOf(String.valueOf(weight.getText()));
-
-        User.updateUser(uid, uname, uemail, uage, uheight, uweight);
-
-        String msg = "User has been updated!";
-
+        String msg = "Korisnik je uspješno ažuriran.";
+        try {
+            User user = User.getById(getIntent().getIntExtra("uid", 0));
+            user.setAge(Integer.valueOf(String.valueOf(profileFragment.getAge().getText())));
+            user.setEmail(profileFragment.getEmail().getText().toString());
+            user.setHeight(Integer.valueOf(String.valueOf(profileFragment.getHeight().getText())));
+            user.setWeight(Integer.valueOf(String.valueOf(profileFragment.getWeight().getText())));
+            user.update();
+        } catch (Exception ex){
+            msg = "Došlo je do pogreške!";
+            ex.printStackTrace();
+        }
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 
         cancelClicked();
@@ -386,23 +358,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onStartActivity(View view) {
 
         if (view.getId() == R.id.start_button) {
-            if (profileFragment.isVisible()) {
-                if (updateBtn.getText() == "Cancel") {
-                    openDialog();
-                } else {
-                    profileFragment.getView().setVisibility(View.INVISIBLE);
-                    startFragment.getView().setVisibility(View.VISIBLE);
-                    weatherActivityFragment.getView().setVisibility(View.VISIBLE);
+            profileFragment.getView().setVisibility(View.INVISIBLE);
+            startFragment.getView().setVisibility(View.VISIBLE);
+            weatherActivityFragment.getView().setVisibility(View.VISIBLE);
 
-                    String start = getResources().getString(R.string.Start_Activity);
-                    String stop = getResources().getString(R.string.Stop_Activity);
+            String start = getResources().getString(R.string.Start_Activity);
+            String stop = getResources().getString(R.string.Stop_Activity);
 
-                    if (startBtn.getText().toString().equals(start)) {
-                        this.Start(stop);
-                    } else {
-                        this.Stop(start);
-                    }
-                }
+            if (startBtn.getText().toString().equals(start)) {
+                this.Start(stop);
+            } else {
+                this.Stop(start);
             }
         }
     }

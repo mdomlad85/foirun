@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import hr.foi.air.foirun.R;
 
@@ -14,6 +16,22 @@ import hr.foi.air.foirun.R;
  */
 
 public class ProfileActivityFragment extends Fragment {
+
+
+    @BindView(R.id.profile_username)
+    EditText username;
+
+    @BindView(R.id.profile_email)
+    EditText email;
+
+    @BindView(R.id.profile_age)
+    EditText age;
+
+    @BindView(R.id.profile_height)
+    EditText height;
+
+    @BindView(R.id.profile_weight)
+    EditText weight;
 
     public ProfileActivityFragment() {
         // Required empty public constructor
@@ -32,5 +50,23 @@ public class ProfileActivityFragment extends Fragment {
         return view;
     }
 
+    public EditText getUsername() {
+        return username;
+    }
 
+    public EditText getEmail() {
+        return email;
+    }
+
+    public EditText getAge() {
+        return age;
+    }
+
+    public EditText getHeight() {
+        return height;
+    }
+
+    public EditText getWeight() {
+        return weight;
+    }
 }

@@ -14,7 +14,7 @@ import hr.foi.air.database.entities.Aktivnost;
 @Database(name = FoiDatabase.NAME, version = FoiDatabase.VERSION)
 public class FoiDatabase {
     public static final String NAME = "foirun";
-    public static final int VERSION = 5;
+    public static final int VERSION = 7;
 
     public static void FillActivityTracker() {
 
@@ -54,7 +54,5 @@ public class FoiDatabase {
 
     }
 
-   /* public static void FillActivities(){
-        String[]
-    }*/
+
 }

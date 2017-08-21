@@ -1,13 +1,9 @@
 package hr.foi.air.database.entities;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.annotation.Unique;
-import com.raizlabs.android.dbflow.sql.language.Update;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
@@ -101,17 +97,6 @@ public class User extends BaseModel {
         return user;
     }
 
-    public static void updateUser(int id, String username, String email, int age, int height, int weight){
-       new Update(User.class)
-               .set(User_Table.name.eq(username),
-                       User_Table.email.eq(email),
-                       User_Table.age.eq(age),
-                       User_Table.height.eq(height),
-                       User_Table.weight.eq(weight))
-               .where(User_Table.id.is(id))
-               .execute();
-        }
-
     public static boolean isValid(String name, String password){
         User user = User.getByName(name);
 
@@ -121,7 +106,7 @@ public class User extends BaseModel {
 
         String hash = HashHelper.sha1Hash(password);
 
-        return user != null  && user.password == hash;
+        return user != null  && user.password.equals(hash);
     }
 
     public int getId() {

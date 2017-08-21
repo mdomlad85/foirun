@@ -20,7 +20,7 @@ public class JSONWeatherTask extends AsyncTask {
             weather = JSONWeatherParser.getWeather(data);
 
             // Let's retrieve the icon
-            weather.iconData = ( (new WeatherHttpClient()).getImage(weather.currentCondition.getIcon()));
+            //weather.iconData = ( (new WeatherHttpClient()).getImage(weather.currentCondition.getIcon()));
 
         } catch (JSONException e) {
             e.printStackTrace();
