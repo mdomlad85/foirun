@@ -90,9 +90,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private WeatherActivityFragment weatherActivityFragment;
     private ProfileActivityFragment profileFragment;
     private boolean isInListView;
-    //TODO: move to config
-    private String  _apiKey = "73ccdc4bdf0e460c149b9a4ac11844bf";
-    private String _language = "hr";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -108,8 +105,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     JSONWeatherParser.LATLON_PART,
                     mLTracker.getLatitude(),
                     mLTracker.getLongitude());
-            queryString += String.format(JSONWeatherParser.LANGUAGE_PART, _language);
-            queryString += String.format(JSONWeatherParser.API_KEY_PART, _apiKey);
+            queryString += String.format(JSONWeatherParser.LANGUAGE_PART, getString(R.string.ow_api_language));
+            queryString += String.format(JSONWeatherParser.API_KEY_PART, getString(R.string.ow_api_key));
             weatherActivityFragment = (WeatherActivityFragment) getSupportFragmentManager()
                     .findFragmentById(R.id.weatheractivity_fragment);
             weatherActivityFragment.executeTask(queryString);
@@ -305,16 +302,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @OnClick(R.id.profile_update_button)
-    public void onUpdateUser(){
+    public void onUpdateUser() {
 
-        if(updateBtn.getText() == "Update"){
+        if (updateBtn.getText().equals("Update")) {
             updateClicked();
-        }
-        else{
+        } else {
             cancelClicked();
         }
 
-        }
+    }
 
     public void updateClicked(){
         profileFragment.getEmail().setEnabled(true);

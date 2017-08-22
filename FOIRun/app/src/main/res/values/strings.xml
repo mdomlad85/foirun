@@ -41,6 +41,7 @@
     <string name="action_save_activity">Save activity</string>
     <string name="action_delete_activity">Delete activity</string>
     <string name="show_myactivities">Show my activities</string>
+    <string name="choose_trening">Choose trening</string>
     <string name="go_back" />
 
     <string name="ow_api_key">73ccdc4bdf0e460c149b9a4ac11844bf</string>
