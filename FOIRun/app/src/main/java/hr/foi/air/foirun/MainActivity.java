@@ -1,13 +1,11 @@
 package hr.foi.air.foirun;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -15,8 +13,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.eminayar.panter.PanterDialog;
 import com.example.trophies.Trophy;
 import com.example.trophies.Trophy1;
 import com.example.trophies.Trophy2;
@@ -38,29 +34,32 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import hr.foi.air.database.FoiDatabase;
 import hr.foi.air.database.entities.Aktivnost;
+import hr.foi.air.database.entities.User;
 import hr.foi.air.foirun.adapter.AktivnostListAdapter;
 import hr.foi.air.foirun.data.Sensor;
 import hr.foi.air.foirun.events.BusProvider;
 import hr.foi.air.foirun.events.NewSensorEvent;
+import hr.foi.air.foirun.fragments.ProfileActivityFragment;
 import hr.foi.air.foirun.fragments.StartActivityFragment;
 import hr.foi.air.foirun.fragments.StopActivityFragment;
+import hr.foi.air.foirun.fragments.WeatherActivityFragment;
 import hr.foi.air.foirun.util.ActivityTracker;
+import hr.foi.air.foirun.util.LocationTracker;
 import hr.foi.air.foirun.util.RemoteSensorManager;
 import hr.foi.air.foirun.util.SensorTracker;
+import hr.foi.air.owf.JSONWeatherParser;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private ActivityTracker mTracker;
     private SensorTracker mSTracker;
+    private LocationTracker mLTracker;
     private RemoteSensorManager remoteSensorManager;
 
     @BindView(R.id.show_myactivies)
@@ -68,6 +67,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     @BindView(R.id.start_button)
     Button startBtn;
+
+    @BindView(R.id.profile_button)
+    Button profileBtn;
+
+    @BindView(R.id.profile_update_button)
+    Button updateBtn;
+
+    @BindView(R.id.profile_save_button)
+    Button saveUserBtn;
 
     @BindView(R.id.wear_button)
     ImageButton wearBtn;
@@ -81,7 +89,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private SupportMapFragment mapFragment;
     private StartActivityFragment startFragment;
     private StopActivityFragment stopFragment;
+    private WeatherActivityFragment weatherActivityFragment;
+    private ProfileActivityFragment profileFragment;
     private boolean isInListView;
+    //TODO: move to config
+    private String  _apiKey = "73ccdc4bdf0e460c149b9a4ac11844bf";
+    private String _language = "hr";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -89,6 +102,25 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.start);
 
         mTracker = new ActivityTracker(this);
+
+        mLTracker = new LocationTracker(MainActivity.this);
+
+        if(mLTracker.canGetLocation()){
+            String queryString = String.format(
+                    JSONWeatherParser.LATLON_PART,
+                    mLTracker.getLatitude(),
+                    mLTracker.getLongitude());
+            queryString += String.format(JSONWeatherParser.LANGUAGE_PART, _language);
+            queryString += String.format(JSONWeatherParser.API_KEY_PART, _apiKey);
+            weatherActivityFragment = (WeatherActivityFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.weatheractivity_fragment);
+            weatherActivityFragment.executeTask(queryString);
+        } else {
+            mLTracker.showSettingsAlert();
+        }
+
+        profileFragment = (ProfileActivityFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.profileactivity_fragment);
 
         startFragment = (StartActivityFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.startactivity_fragment);
@@ -109,7 +141,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         mapFragment.getView().setVisibility(View.INVISIBLE);
         stopFragment.getView().setVisibility(View.INVISIBLE);
-        scoreboard.setVisibility(View.INVISIBLE);
+        profileFragment.getView().setVisibility(View.INVISIBLE);
 
         remoteSensorManager = RemoteSensorManager.getInstance(this);
         remoteSensorManager.addTag("HEART_RATE");
@@ -137,6 +169,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             scoreboard.setAdapter(adapter);
             scoreboard.setVisibility(View.VISIBLE);
             startFragment.getView().setVisibility(View.INVISIBLE);
+            profileFragment.getView().setVisibility(View.INVISIBLE);
+            weatherActivityFragment.getView().setVisibility(View.INVISIBLE);
             startBtns.setVisibility(View.INVISIBLE);
 
             isInListView = true;
@@ -147,15 +181,38 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onBackPressed() {
 
-        if (isInListView) {
-
+        if(profileFragment.isVisible()){
+            if(updateBtn.getText() == "Cancel"){ openDialog();}
+            else {
+                profileFragment.getView().setVisibility(View.INVISIBLE);
+                startFragment.getView().setVisibility(View.VISIBLE);
+                weatherActivityFragment.getView().setVisibility(View.VISIBLE);
+            }
+        }
+        else if (isInListView) {
             scoreboard.setVisibility(View.INVISIBLE);
             startFragment.getView().setVisibility(View.VISIBLE);
             startBtns.setVisibility(View.VISIBLE);
 
             isInListView = false;
-
         }
+    }
+
+    @OnClick(R.id.profile_button)
+    public void onProfileActivity(View view){
+        if(view.getId() == R.id.profile_button){
+            startFragment.getView().setVisibility(View.INVISIBLE);
+            weatherActivityFragment.getView().setVisibility(View.INVISIBLE);
+            profileFragment.getView().setVisibility(View.VISIBLE);
+            updateBtn.setVisibility(View.VISIBLE);
+        }
+        int uid = getIntent().getIntExtra("uid",  0);
+
+        profileFragment.getUsername().setText(User.getById(uid).getName());
+        profileFragment.getEmail().setText(User.getById(uid).getEmail());
+        if(User.getById(uid).getAge() != 0) { profileFragment.getAge().setText(String.valueOf(User.getById(uid).getAge())); }
+        if(User.getById(uid).getHeight() != 0) { profileFragment.getHeight().setText(String.valueOf(User.getById(uid).getHeight())); }
+        if(User.getById(uid).getWeight() != 0) { profileFragment.getWeight().setText(String.valueOf(User.getById(uid).getWeight())); }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -186,7 +243,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(RecordDistanceEvent event) /* Do something */ {
@@ -298,10 +354,63 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         super.onStop();
     }
 
+    @OnClick(R.id.profile_update_button)
+    public void onUpdateUser(){
+
+        if(updateBtn.getText() == "Update"){
+            updateClicked();
+        }
+        else{
+            cancelClicked();
+        }
+
+        }
+
+    public void updateClicked(){
+        profileFragment.getEmail().setEnabled(true);
+        profileFragment.getAge().setEnabled(true);
+        profileFragment.getHeight().setEnabled(true);
+        profileFragment.getWeight().setEnabled(true);
+        updateBtn.setText("Cancel");
+        saveUserBtn.setClickable(true);
+    }
+
+    public void cancelClicked(){
+        profileFragment.getEmail().setEnabled(false);
+        profileFragment.getAge().setEnabled(false);
+        profileFragment.getHeight().setEnabled(false);
+        profileFragment.getWeight().setEnabled(false);
+        updateBtn.setText("Update");
+
+        saveUserBtn.setClickable(false);
+    }
+
+    @OnClick(R.id.profile_save_button)
+    public void onSaveUserChanges(){
+        String msg = "Korisnik je uspješno ažuriran.";
+        try {
+            User user = User.getById(getIntent().getIntExtra("uid", 0));
+            user.setAge(Integer.valueOf(String.valueOf(profileFragment.getAge().getText())));
+            user.setEmail(profileFragment.getEmail().getText().toString());
+            user.setHeight(Integer.valueOf(String.valueOf(profileFragment.getHeight().getText())));
+            user.setWeight(Integer.valueOf(String.valueOf(profileFragment.getWeight().getText())));
+            user.update();
+        } catch (Exception ex){
+            msg = "Došlo je do pogreške!";
+            ex.printStackTrace();
+        }
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+
+        cancelClicked();
+    }
+
     @OnClick(R.id.start_button)
     public void onStartActivity(View view) {
 
         if (view.getId() == R.id.start_button) {
+            profileFragment.getView().setVisibility(View.INVISIBLE);
+            startFragment.getView().setVisibility(View.VISIBLE);
+            weatherActivityFragment.getView().setVisibility(View.VISIBLE);
 
             String start = getResources().getString(R.string.Start_Activity);
             String stop = getResources().getString(R.string.Stop_Activity);
@@ -347,6 +456,31 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    public void openDialog() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        dialog.setCancelable(false);
+        dialog.setTitle("Cancel update");
+        dialog.setMessage("Are you sure you want to cancel user update?" );
+        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                cancelClicked();
+                profileFragment.getView().setVisibility(View.INVISIBLE);
+                startFragment.getView().setVisibility(View.VISIBLE);
+                weatherActivityFragment.getView().setVisibility(View.VISIBLE);
+            }
+        })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //do nothing
+                    }
+                });
+
+        final AlertDialog alert = dialog.create();
+        alert.show();
+    }
+
     private void PrepearePodium() {
 
         mTracker.clearMap();
@@ -354,7 +488,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         stopFragment.getView().setVisibility(View.INVISIBLE);
         startFragment.getView().setVisibility(View.VISIBLE);
         startFragment.ClearForm();
+        profileFragment.getView().setVisibility(View.INVISIBLE);
         startBtns.setVisibility(View.VISIBLE);
+        profileBtn.setVisibility(View.VISIBLE);
 
     }
 
@@ -372,7 +508,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         stopFragment.setTimeTxt(mTracker.getAktivnost().getTime());
 
         stopFragment.getView().setVisibility(View.VISIBLE);
-
+        weatherActivityFragment.getView().setVisibility(View.VISIBLE);
     }
 
     private void Start(String stop) {
@@ -397,6 +533,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         mapFragment.getView().setVisibility(View.VISIBLE);
         startFragment.getView().setVisibility(View.INVISIBLE);
+        weatherActivityFragment.getView().setVisibility(View.INVISIBLE);
     }
 
     private void notifyUSerForNewSensor(Sensor sensor) {

@@ -1,8 +1,5 @@
 package hr.foi.air.database.entities;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -39,7 +36,16 @@ public class User extends BaseModel {
     @Column
     boolean google;
 
-    public User(String name, String email, String token, boolean isGoogle) {
+    @Column
+    int age;
+
+    @Column
+    int height;
+
+    @Column
+    int weight;
+
+    public User(String name, String email, String token, boolean isGoogle, int age, int height, int weight) {
         this.name = name;
         this.email = email;
 
@@ -50,6 +56,9 @@ public class User extends BaseModel {
         }
 
         this.google = isGoogle;
+        this.age = age;
+        this.height = height;
+        this.weight = weight;
     }
 
     public User() {
@@ -97,7 +106,7 @@ public class User extends BaseModel {
 
         String hash = HashHelper.sha1Hash(password);
 
-        return user != null  && user.password == hash;
+        return user != null  && user.password.equals(hash);
     }
 
     public int getId() {
@@ -142,6 +151,30 @@ public class User extends BaseModel {
 
     public void setGoogle(boolean google) {
         this.google = google;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
     public boolean isValid(String password) {

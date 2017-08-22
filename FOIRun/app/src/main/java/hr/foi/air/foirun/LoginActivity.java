@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                         msg = "You are sucessfully logged in";
                     }
                 } else {
-                    new User(username, email, password, false).insert();
+                    new User(username, email, password, false, 0, 0, 0).insert();
                     msg = "You are sucessfully registered";
 
                 }
@@ -164,7 +164,7 @@ public class LoginActivity extends AppCompatActivity {
             String mail = acct.getEmail();
 
             if(User.getByMailName(mail) == null){
-                new User(username, mail, token, true).save();
+                new User(username, mail, token, true, 0, 0, 0).save();
             }
 
             User user = User.getByMailName(mail);
