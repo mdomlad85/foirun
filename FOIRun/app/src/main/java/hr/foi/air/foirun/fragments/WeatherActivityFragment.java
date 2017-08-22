@@ -95,17 +95,18 @@ public class WeatherActivityFragment extends Fragment {
 
             if (weather.iconData != null && weather.iconData.length > 0) {
                 Bitmap img = BitmapFactory.decodeByteArray(weather.iconData, 0, weather.iconData.length);
-                imgView.setImageBitmap(img);
+                imgView.setImageBitmap(Bitmap.createScaledBitmap(img, 200, 200, false));
             }
 
-            cityText.setText(weather.location.getCity() + "," + weather.location.getCountry());
-            condDescr.setText(weather.currentCondition.getCondition() + "(" + weather.currentCondition.getDescr() + ")");
-            temp.setText("" + Math.round((weather.temperature.getTemp() - 273.15)) + "°C");
-            hum.setText("" + weather.currentCondition.getHumidity() + "%");
-            press.setText("" + weather.currentCondition.getPressure() + " hPa");
-            windSpeed.setText("" + weather.wind.getSpeed() + " mps");
-            windDeg.setText("" + weather.wind.getDeg() + "°");
-
+            if(weather.location != null) {
+                cityText.setText(weather.location.getCity() + "," + weather.location.getCountry());
+                condDescr.setText(weather.currentCondition.getCondition() + "(" + weather.currentCondition.getDescr() + ")");
+                temp.setText("" + Math.round((weather.temperature.getTemp() - 273.15)) + "°C");
+                hum.setText("" + weather.currentCondition.getHumidity() + "%");
+                press.setText("" + weather.currentCondition.getPressure() + " hPa");
+                windSpeed.setText("" + weather.wind.getSpeed() + " mps");
+                windDeg.setText("" + weather.wind.getDeg() + "°");
+            }
         }
     }
 

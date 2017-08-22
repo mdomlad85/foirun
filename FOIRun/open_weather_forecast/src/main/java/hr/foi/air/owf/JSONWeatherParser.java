@@ -67,18 +67,30 @@ public class JSONWeatherParser {
 
 
     private static JSONObject getObject(String tagName, JSONObject jObj)  throws JSONException {
-        return jObj.getJSONObject(tagName);
+        if(jObj.has(tagName)){
+            return jObj.getJSONObject(tagName);
+        }
+        return jObj;
     }
 
     private static String getString(String tagName, JSONObject jObj) throws JSONException {
-        return jObj.getString(tagName);
+        if(jObj.has(tagName)){
+            return jObj.getString(tagName);
+        }
+        return "";
     }
 
     private static float  getFloat(String tagName, JSONObject jObj) throws JSONException {
-        return (float) jObj.getDouble(tagName);
+        if(jObj.has(tagName)){
+            return (float)jObj.getDouble(tagName);
+        }
+        return 0;
     }
 
     private static int  getInt(String tagName, JSONObject jObj) throws JSONException {
-        return jObj.getInt(tagName);
+        if(jObj.has(tagName)){
+            return jObj.getInt(tagName);
+        }
+        return 0;
     }
 }

@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 
 public class WeatherHttpClient {
@@ -63,18 +64,12 @@ public class WeatherHttpClient {
         HttpURLConnection con = null ;
         InputStream is = null;
         try {
-            con = (HttpURLConnection) ( new URL(IMG_URL + code)).openConnection();
-            con.setRequestMethod("GET");
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.connect();
-
-            // Let's read the response
-            is = con.getInputStream();
+            URL url = new URL(String.format("%s%s.png", IMG_URL, code));
+            is = url.openStream();
             byte[] buffer = new byte[1024];
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            while ( is.read(buffer) != -1)
+            while (is.read(buffer) != -1)
                 baos.write(buffer);
 
             return baos.toByteArray();
