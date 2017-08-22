@@ -34,17 +34,21 @@ import net.danlew.android.joda.JodaTimeAndroid;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Date;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import hr.foi.air.database.FoiDatabase;
+import hr.foi.air.database.entities.Achievement;
 import hr.foi.air.database.entities.Aktivnost;
 import hr.foi.air.database.entities.User;
 import hr.foi.air.foirun.adapter.AktivnostListAdapter;
 import hr.foi.air.foirun.data.Sensor;
 import hr.foi.air.foirun.events.BusProvider;
 import hr.foi.air.foirun.events.NewSensorEvent;
+import hr.foi.air.foirun.fragments.ProfileAchievementsFragment;
 import hr.foi.air.foirun.fragments.ProfileActivityFragment;
 import hr.foi.air.foirun.fragments.StartActivityFragment;
 import hr.foi.air.foirun.fragments.StopActivityFragment;
@@ -91,6 +95,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private StopActivityFragment stopFragment;
     private WeatherActivityFragment weatherActivityFragment;
     private ProfileActivityFragment profileFragment;
+    private ProfileAchievementsFragment profileAchievementsFragment;
     private boolean isInListView;
     //TODO: move to config
     private String  _apiKey = "73ccdc4bdf0e460c149b9a4ac11844bf";
@@ -131,6 +136,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
+        profileAchievementsFragment = (ProfileAchievementsFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.profileaachievements_fragment);
+
+
+
         mapFragment.getMapAsync(this);
 
         ButterKnife.bind(this);
@@ -142,6 +152,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getView().setVisibility(View.INVISIBLE);
         stopFragment.getView().setVisibility(View.INVISIBLE);
         profileFragment.getView().setVisibility(View.INVISIBLE);
+        profileAchievementsFragment.getView().setVisibility(View.INVISIBLE);
 
         remoteSensorManager = RemoteSensorManager.getInstance(this);
         remoteSensorManager.addTag("HEART_RATE");
@@ -177,6 +188,20 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    @OnClick(R.id.show_achievements)
+    public void onShowAchievements(View view) {
+        if (view.getId() == R.id.show_achievements) {
+            profileAchievementsFragment.refreshList();
+            scoreboard.setVisibility(View.INVISIBLE);
+            startFragment.getView().setVisibility(View.INVISIBLE);
+            profileFragment.getView().setVisibility(View.INVISIBLE);
+            profileAchievementsFragment.getView().setVisibility(View.VISIBLE);
+            weatherActivityFragment.getView().setVisibility(View.INVISIBLE);
+            startBtns.setVisibility(View.INVISIBLE);
+
+        }
+    }
+
     //Push back button to go back from list view
     @Override
     public void onBackPressed() {
@@ -188,11 +213,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 startFragment.getView().setVisibility(View.VISIBLE);
                 weatherActivityFragment.getView().setVisibility(View.VISIBLE);
             }
+        } else if (profileAchievementsFragment.isVisible()) {
+            startFragment.getView().setVisibility(View.VISIBLE);
+            startBtns.setVisibility(View.VISIBLE);
+            weatherActivityFragment.getView().setVisibility(View.VISIBLE);
+            profileAchievementsFragment.getView().setVisibility(View.INVISIBLE);
         }
         else if (isInListView) {
             scoreboard.setVisibility(View.INVISIBLE);
             startFragment.getView().setVisibility(View.VISIBLE);
             startBtns.setVisibility(View.VISIBLE);
+
 
             isInListView = false;
         }
@@ -236,6 +267,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 //editor.putLong("to10km", ((long) remainder));
                 editor.apply();
                 show1stTrophyMessage();
+                Achievement achievement = new Achievement();
+                achievement.setName("10 km covered.");
+                achievement.setDate(new Date());
+                achievement.setType("");
+                achievement.save();
             }
 
 
@@ -261,6 +297,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (maxDistance > maxSaved) {
             show3rdTrophyMessage();
+            Achievement achievement = new Achievement();
+            achievement.setName("New max distance: " + maxDistance + ".");
+            achievement.setDate(new Date());
+            achievement.setType("Record distance covered in one activity.");
+            achievement.save();
         }
 
 
@@ -276,32 +317,67 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
 
-        if (totalDistance >=50 && totalDistance <100){
+        if (totalDistance >= 50000 && totalDistance < 1000000) {
             //the rookie
             show4thTrophyMessage("The rookie");
-        } else if (totalDistance >= 100 && totalDistance < 200) {
+            Achievement achievement = new Achievement();
+            achievement.setName("The rookie");
+            achievement.setDate(new Date());
+            achievement.setType("");
+            achievement.save();
+        } else if (totalDistance >= 1000000 && totalDistance < 200000) {
             //the jogger
             show4thTrophyMessage("The jogger");
+            Achievement achievement = new Achievement();
+            achievement.setName("The jogger");
+            achievement.setDate(new Date());
+            achievement.setType("");
+            achievement.save();
 
-        }else if (totalDistance >= 200 && totalDistance < 300) {
+        } else if (totalDistance >= 2000000 && totalDistance < 300000) {
             //the exhausted
             show4thTrophyMessage("The exhausted");
+            Achievement achievement = new Achievement();
+            achievement.setName("The exhausted");
+            achievement.setDate(new Date());
+            achievement.setType("");
+            achievement.save();
 
-        }else if (totalDistance >= 300 && totalDistance < 500) {
+        } else if (totalDistance >= 300000 && totalDistance < 500000) {
             //the road marshal
             show4thTrophyMessage("The road marshal");
+            Achievement achievement = new Achievement();
+            achievement.setName("The road marshal");
+            achievement.setDate(new Date());
+            achievement.setType("");
+            achievement.save();
 
-        }else if (totalDistance >= 500 && totalDistance < 750) {
+        } else if (totalDistance >= 500000 && totalDistance < 750000) {
             //the inexhaustible
             show4thTrophyMessage("The inexhaustible");
+            Achievement achievement = new Achievement();
+            achievement.setName("The inexhaustible");
+            achievement.setDate(new Date());
+            achievement.setType("");
+            achievement.save();
 
-        }else if (totalDistance >= 750 && totalDistance < 1000) {
+        } else if (totalDistance >= 750000 && totalDistance < 1000000) {
             //lord of the road
             show4thTrophyMessage("Lord of the road");
+            Achievement achievement = new Achievement();
+            achievement.setName("Lord of the road");
+            achievement.setDate(new Date());
+            achievement.setType("");
+            achievement.save();
 
-        }else if (totalDistance >= 1000) {
+        } else if (totalDistance >= 1000000) {
             //the unstoppable
             show4thTrophyMessage("The unstoppable");
+            Achievement achievement = new Achievement();
+            achievement.setName("The unstoppable");
+            achievement.setDate(new Date());
+            achievement.setType("");
+            achievement.save();
 
         }
 
@@ -318,6 +394,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             show2stTrophyMessage();
             editor.putLong("activities_number", Aktivnost.getAll().size());
             editor.apply();
+            Achievement achievement = new Achievement();
+            achievement.setName("5 activities done, total number: " + Aktivnost.getAll().size());
+            achievement.setDate(new Date());
+            achievement.setType("");
+            achievement.save();
         }
     }
 

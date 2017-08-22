@@ -151,6 +151,8 @@ public class ActivityTracker extends LocationTracker {
 
         mActivity.setTime(getDuration());
         mActivity.setDistance(getDistance());
+        //fake
+        //mActivity.setDistance(4000);
         mActivity.setAvg_cadence(getAvgCadence());
         mActivity.setAvg_hr(getAvgHr());
         mActivity.setAvg_hr(getMaxHr());
@@ -336,6 +338,7 @@ public class ActivityTracker extends LocationTracker {
     }
 
     public void clearMap() {
+        //TODO crashed emulator
 //        mMap.clear();
     }
 }
