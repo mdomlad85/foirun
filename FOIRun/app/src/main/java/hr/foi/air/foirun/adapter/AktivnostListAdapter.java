@@ -70,7 +70,8 @@ public class AktivnostListAdapter extends BaseAdapter {
 
         holder.activity.setText(String.format( "%s", type.getName() ));
 
-        holder.distance.setText(String.format( "%.2f m", m.getDistance() ));
+        float distance = (float)m.getDistance() / 1000;
+        holder.distance.setText(String.format( "%.2f km", distance ));
 
         long milis = m.getTime();
         int seconds = (int) (milis / 1000) % 60 ;
