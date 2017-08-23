@@ -144,6 +144,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         JodaTimeAndroid.init(this);
         FlowManager.init(new FlowConfig.Builder(this).build());
         FoiDatabase.FillActivityTracker();
+        FoiDatabase.FillExerciseData();
         //FoiDatabase.FillFakeData();
 
         mapFragment.getView().setVisibility(View.INVISIBLE);
@@ -166,23 +167,30 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     @OnClick(R.id.show_myactivies)
     public void onShowActivities(View view) {
-
         if (view.getId() == R.id.show_myactivies) {
-
             int uid = getIntent().getIntExtra("uid", 0);
-            List<Aktivnost> aktivnosti = Aktivnost.getByUserId(uid);
-
-            AktivnostListAdapter adapter = new AktivnostListAdapter(this, aktivnosti);
-
-            scoreboard.setAdapter(adapter);
-            scoreboard.setVisibility(View.VISIBLE);
-            startFragment.getView().setVisibility(View.INVISIBLE);
-            profileFragment.getView().setVisibility(View.INVISIBLE);
-            weatherActivityFragment.getView().setVisibility(View.INVISIBLE);
-            startBtns.setVisibility(View.INVISIBLE);
-
-            isInListView = true;
+            setupAktivnostList(Aktivnost.getByUserId(uid));
         }
+    }
+
+    @OnClick(R.id.choose_exercise)
+    public void onShowExercises(View view) {
+        if (view.getId() == R.id.choose_exercise) {
+            setupAktivnostList(Aktivnost.getExercises());
+        }
+    }
+
+    private void setupAktivnostList(List<Aktivnost> aktivnosti) {
+        AktivnostListAdapter adapter = new AktivnostListAdapter(this, aktivnosti);
+
+        scoreboard.setAdapter(adapter);
+        scoreboard.setVisibility(View.VISIBLE);
+        startFragment.getView().setVisibility(View.INVISIBLE);
+        profileFragment.getView().setVisibility(View.INVISIBLE);
+        weatherActivityFragment.getView().setVisibility(View.INVISIBLE);
+        startBtns.setVisibility(View.INVISIBLE);
+
+        isInListView = true;
     }
 
     @OnClick(R.id.show_achievements)

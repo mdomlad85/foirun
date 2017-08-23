@@ -95,7 +95,9 @@ public class WeatherActivityFragment extends Fragment {
 
             if (weather.iconData != null && weather.iconData.length > 0) {
                 Bitmap img = BitmapFactory.decodeByteArray(weather.iconData, 0, weather.iconData.length);
-                imgView.setImageBitmap(Bitmap.createScaledBitmap(img, 200, 200, false));
+                if(img != null){
+                    imgView.setImageBitmap(Bitmap.createScaledBitmap(img, 200, 200, false));
+                }
             }
 
             if(weather.location != null) {
