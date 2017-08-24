@@ -41,6 +41,7 @@
     <string name="action_save_activity">Save activity</string>
     <string name="action_delete_activity">Delete activity</string>
     <string name="show_myactivities">Show my activities</string>
+    <string name="show_achievements">Show achievements</string>
     <string name="choose_trening">Choose exercise</string>
     <string name="go_back" />
 

@@ -1,30 +1,39 @@
 package hr.foi.air.foirun.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.util.List;
 
 import hr.foi.air.database.entities.ActivityType;
 import hr.foi.air.database.entities.Aktivnost;
+import hr.foi.air.foirun.MainActivity;
 import hr.foi.air.foirun.R;
+import hr.foi.air.foirun.events.OnExerciseClick;
 
 public class AktivnostListAdapter extends BaseAdapter {
 
     private  Context mContext;
     private LayoutInflater inflater;
     private List<Aktivnost> itemsItems;
+    private boolean isExercise;
+    private ViewHolder holder;
+    private Aktivnost aktivnost;
+    private OnExerciseClick mCallback;
 
 
 
-    public AktivnostListAdapter(Context context, List<Aktivnost> itemsItems) {
-
-        this.mContext = context;
+    public AktivnostListAdapter(MainActivity mActivity, List<Aktivnost> itemsItems, boolean isExercise) {
+        this.isExercise = isExercise;
+        this.mContext = mActivity.getBaseContext();
         this.itemsItems = itemsItems;
-
+        this.mCallback = mActivity;
     }
 
     @Override
@@ -44,7 +53,6 @@ public class AktivnostListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View scoreView, ViewGroup parent) {
-        ViewHolder holder;
         if (inflater == null) {
             inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
@@ -56,6 +64,16 @@ public class AktivnostListAdapter extends BaseAdapter {
             holder.distance = (TextView) scoreView.findViewById(R.id.distance_row);
             holder.time = (TextView) scoreView.findViewById(R.id.time_row);
             holder.name = (TextView) scoreView.findViewById(R.id.name_row);
+            holder.arrowRight = (ImageView) scoreView.findViewById(R.id.arrow_right);
+
+            holder.arrowRight.setVisibility(isExercise ? View.VISIBLE : View.INVISIBLE);
+
+            holder.arrowRight.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mCallback.onClick(aktivnost);
+                }
+            });
 
             scoreView.setTag(holder);
 
@@ -63,17 +81,17 @@ public class AktivnostListAdapter extends BaseAdapter {
             holder = (ViewHolder) scoreView.getTag();
         }
 
-        final Aktivnost m = itemsItems.get(position);
-        holder.name.setText(m.getName());
+        aktivnost = itemsItems.get(position);
+        holder.name.setText(aktivnost.getName());
 
-        ActivityType type = ActivityType.getById(m.getType_id());
+        ActivityType type = ActivityType.getById(aktivnost.getType_id());
 
         holder.activity.setText(String.format( "%s", type.getName() ));
 
-        float distance = (float)m.getDistance() / 1000;
+        float distance = (float)aktivnost.getDistance() / 1000;
         holder.distance.setText(String.format( "%.2f km", distance ));
 
-        long milis = m.getTime();
+        long milis = aktivnost.getTime();
         int seconds = (int) (milis / 1000) % 60 ;
         int minutes = (int) ((milis / (1000*60)) % 60);
         int hours   = (int) ((milis / (1000*60*60)) % 24);
@@ -92,6 +110,8 @@ public class AktivnostListAdapter extends BaseAdapter {
         TextView time;
 
         TextView name;
+
+        ImageView arrowRight;
     }
 
 }
