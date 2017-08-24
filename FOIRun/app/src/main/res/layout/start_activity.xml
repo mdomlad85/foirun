@@ -68,6 +68,15 @@
                 android:textStyle="bold" />
 
             <Button
+                android:id="@+id/show_achievements"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="Show achievements"
+                android:textStyle="bold" />
+
+            <Button
                 android:id="@+id/choose_trening"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
