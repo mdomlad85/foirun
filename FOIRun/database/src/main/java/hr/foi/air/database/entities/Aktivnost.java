@@ -30,6 +30,7 @@ public class Aktivnost extends BaseModel {
     @Column boolean deleted;
     @Column int type_id;
     @Column int user_id;
+    @Column(defaultValue = "0") boolean is_exercise;
 
 
     public Aktivnost(long start_time, double distance, long time, String name, String comment,
@@ -54,6 +55,12 @@ public class Aktivnost extends BaseModel {
 
     public static List<Aktivnost> getAll(){
         return SQLite.select().from(Aktivnost.class).queryList();
+    }
+
+    public static List<Aktivnost> getExercises() {
+        return new Select().from(Aktivnost.class)
+                .where(Aktivnost_Table.is_exercise.eq(true))
+                .queryList();
     }
 
     List<Location> locationList;
@@ -165,5 +172,13 @@ public class Aktivnost extends BaseModel {
 
     public void setUser_id(int user_id) {
         this.user_id = user_id;
+    }
+
+    public boolean is_exercise() {
+        return is_exercise;
+    }
+
+    public void setIs_exercise(boolean is_exercise) {
+        this.is_exercise = is_exercise;
     }
 }

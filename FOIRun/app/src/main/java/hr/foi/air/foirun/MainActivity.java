@@ -42,12 +42,14 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import hr.foi.air.database.FoiDatabase;
 import hr.foi.air.database.entities.Achievement;
+import hr.foi.air.database.entities.ActivityType;
 import hr.foi.air.database.entities.Aktivnost;
 import hr.foi.air.database.entities.User;
 import hr.foi.air.foirun.adapter.AktivnostListAdapter;
 import hr.foi.air.foirun.data.Sensor;
 import hr.foi.air.foirun.events.BusProvider;
 import hr.foi.air.foirun.events.NewSensorEvent;
+import hr.foi.air.foirun.events.OnExerciseClick;
 import hr.foi.air.foirun.fragments.ProfileAchievementsFragment;
 import hr.foi.air.foirun.fragments.ProfileActivityFragment;
 import hr.foi.air.foirun.fragments.StartActivityFragment;
@@ -59,12 +61,15 @@ import hr.foi.air.foirun.util.RemoteSensorManager;
 import hr.foi.air.foirun.util.SensorTracker;
 import hr.foi.air.owf.JSONWeatherParser;
 
-public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MainActivity extends FragmentActivity implements OnMapReadyCallback, OnExerciseClick {
 
     private ActivityTracker mTracker;
     private SensorTracker mSTracker;
     private LocationTracker mLTracker;
     private RemoteSensorManager remoteSensorManager;
+
+    private String start;
+    private String stop;
 
     @BindView(R.id.show_myactivies)
     Button showBtn;
@@ -102,6 +107,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.start);
+        start = getResources().getString(R.string.Start_Activity);
+        stop = getResources().getString(R.string.Stop_Activity);
 
         mTracker = new ActivityTracker(this);
 
@@ -144,6 +151,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         JodaTimeAndroid.init(this);
         FlowManager.init(new FlowConfig.Builder(this).build());
         FoiDatabase.FillActivityTracker();
+        FoiDatabase.FillExerciseData();
         //FoiDatabase.FillFakeData();
 
         mapFragment.getView().setVisibility(View.INVISIBLE);
@@ -166,23 +174,32 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     @OnClick(R.id.show_myactivies)
     public void onShowActivities(View view) {
-
         if (view.getId() == R.id.show_myactivies) {
-
             int uid = getIntent().getIntExtra("uid", 0);
-            List<Aktivnost> aktivnosti = Aktivnost.getByUserId(uid);
-
-            AktivnostListAdapter adapter = new AktivnostListAdapter(this, aktivnosti);
-
-            scoreboard.setAdapter(adapter);
-            scoreboard.setVisibility(View.VISIBLE);
-            startFragment.getView().setVisibility(View.INVISIBLE);
-            profileFragment.getView().setVisibility(View.INVISIBLE);
-            weatherActivityFragment.getView().setVisibility(View.INVISIBLE);
-            startBtns.setVisibility(View.INVISIBLE);
-
-            isInListView = true;
+            setupAktivnostList(Aktivnost.getByUserId(uid), false);
         }
+    }
+
+    @OnClick(R.id.choose_exercise)
+    public void onShowExercises(View view) {
+        if (view.getId() == R.id.choose_exercise) {
+            //TODO: add filter for exercise if user already complete some
+            int uid = getIntent().getIntExtra("uid", 0);
+            setupAktivnostList(Aktivnost.getExercises(), true);
+        }
+    }
+
+    private void setupAktivnostList(List<Aktivnost> aktivnosti, boolean isExercise) {
+        AktivnostListAdapter adapter = new AktivnostListAdapter(this, aktivnosti, isExercise);
+
+        scoreboard.setAdapter(adapter);
+        scoreboard.setVisibility(View.VISIBLE);
+        startFragment.getView().setVisibility(View.INVISIBLE);
+        profileFragment.getView().setVisibility(View.INVISIBLE);
+        weatherActivityFragment.getView().setVisibility(View.INVISIBLE);
+        startBtns.setVisibility(View.INVISIBLE);
+
+        isInListView = true;
     }
 
     @OnClick(R.id.show_achievements)
@@ -380,7 +397,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(NumberOfActivitiesEvent event) {
         SharedPreferences mSettings = PreferenceManager.getDefaultSharedPreferences(this);
@@ -488,9 +504,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             profileFragment.getView().setVisibility(View.INVISIBLE);
             startFragment.getView().setVisibility(View.VISIBLE);
             weatherActivityFragment.getView().setVisibility(View.VISIBLE);
-
-            String start = getResources().getString(R.string.Start_Activity);
-            String stop = getResources().getString(R.string.Stop_Activity);
 
             if (startBtn.getText().toString().equals(start)) {
                 this.Start(stop);
@@ -613,15 +626,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         weatherActivityFragment.getView().setVisibility(View.INVISIBLE);
     }
 
-    private void notifyUSerForNewSensor(Sensor sensor) {
-        Toast.makeText(this, "New Sensor!\n" + sensor.getName(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Subscribe
-    public void onNewSensorEvent(final NewSensorEvent event) {
-        notifyUSerForNewSensor(event.getSensor());
-    }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         googleMap.setMinZoomPreference(16);
@@ -632,5 +636,23 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mTracker.setmMap(googleMap);
     }
 
+    private void notifyUSerForNewSensor(Sensor sensor) {
+        Toast.makeText(this, "New Sensor!\n" + sensor.getName(), Toast.LENGTH_SHORT).show();
+    }
 
+    @Subscribe
+    public void onNewSensorEvent(final NewSensorEvent event) {
+        notifyUSerForNewSensor(event.getSensor());
+    }
+
+    @Override
+    public void onClick(Aktivnost aktivnost) {
+        startFragment.setComment(aktivnost.getComment());
+        startFragment.setName(aktivnost.getName());
+        ActivityType type = ActivityType.getById(aktivnost.getType_id());
+        startFragment.setTypeName(type.getName());
+        Start(stop);
+
+        Toast.makeText(this, "New Sensor!\n" + aktivnost.getName(), Toast.LENGTH_SHORT).show();
+    }
 }

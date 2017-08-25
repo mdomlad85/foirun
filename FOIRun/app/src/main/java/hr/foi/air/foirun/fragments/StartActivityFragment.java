@@ -77,6 +77,18 @@ public class StartActivityFragment extends Fragment implements AdapterView.OnIte
         return comment == null ? "" : comment;
     }
 
+    public void setName(String text) {
+        nameTxt.setText(text);
+    }
+
+    public void setTypeName(String typeName) {
+        mTypeName = typeName;
+    }
+
+    public void setComment(String comment) {
+        commentTxt.setText(comment);
+    }
+
     public boolean isValid() {
         String name = nameTxt.getText().toString();
 

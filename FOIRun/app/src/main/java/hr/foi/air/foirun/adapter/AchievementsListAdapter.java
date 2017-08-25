@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -46,7 +48,11 @@ public class AchievementsListAdapter extends RecyclerView.Adapter<AchievementsLi
     public void onBindViewHolder(AchievementsListAdapter.ViewHolder holder, int position) {
         Achievement achievement = mAchievements.get(position);
         holder.nameTv.setText(achievement.getName());
-        holder.dateTv.setText(achievement.getDate().toString());
+
+        android.text.format.DateFormat df = new android.text.format.DateFormat();
+        String dateFormated = df.format("dd.MM.yyyy hh:mm:ss", achievement.getDate()).toString();
+
+        holder.dateTv.setText(dateFormated);
 
     }
 
