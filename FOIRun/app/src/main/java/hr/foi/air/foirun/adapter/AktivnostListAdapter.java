@@ -26,7 +26,7 @@ public class AktivnostListAdapter extends BaseAdapter {
     private ViewHolder holder;
     private Aktivnost aktivnost;
     private OnExerciseClick mCallback;
-
+    private int position;
 
 
     public AktivnostListAdapter(MainActivity mActivity, List<Aktivnost> itemsItems, boolean isExercise) {
@@ -52,7 +52,7 @@ public class AktivnostListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View scoreView, ViewGroup parent) {
+    public View getView(final int position, View scoreView, ViewGroup parent) {
         if (inflater == null) {
             inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
@@ -71,7 +71,7 @@ public class AktivnostListAdapter extends BaseAdapter {
             holder.arrowRight.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mCallback.onClick(aktivnost);
+                    mCallback.onClick(itemsItems.get(position));
                 }
             });
 
@@ -99,6 +99,10 @@ public class AktivnostListAdapter extends BaseAdapter {
         holder.time.setText(String.format( "%02d:%02d:%02d", hours, minutes, seconds ));
 
         return scoreView;
+    }
+
+    public void setSelectedPosition(int selectedPosition) {
+        this.position = selectedPosition;
     }
 
     static class ViewHolder {

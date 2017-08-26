@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -152,7 +154,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         FlowManager.init(new FlowConfig.Builder(this).build());
         FoiDatabase.FillActivityTracker();
         FoiDatabase.FillExerciseData();
-        //FoiDatabase.FillFakeData();
 
         mapFragment.getView().setVisibility(View.INVISIBLE);
         stopFragment.getView().setVisibility(View.INVISIBLE);
@@ -190,9 +191,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void setupAktivnostList(List<Aktivnost> aktivnosti, boolean isExercise) {
-        AktivnostListAdapter adapter = new AktivnostListAdapter(this, aktivnosti, isExercise);
+        final AktivnostListAdapter adapter = new AktivnostListAdapter(this, aktivnosti, isExercise);
 
         scoreboard.setAdapter(adapter);
+        scoreboard.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                adapter.setSelectedPosition(position);
+            }
+        });
         scoreboard.setVisibility(View.VISIBLE);
         startFragment.getView().setVisibility(View.INVISIBLE);
         profileFragment.getView().setVisibility(View.INVISIBLE);
@@ -236,6 +243,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         else if (isInListView) {
             scoreboard.setVisibility(View.INVISIBLE);
             startFragment.getView().setVisibility(View.VISIBLE);
+            weatherActivityFragment.getView().setVisibility(View.VISIBLE);
             startBtns.setVisibility(View.VISIBLE);
 
 
@@ -501,6 +509,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onStartActivity(View view) {
 
         if (view.getId() == R.id.start_button) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             profileFragment.getView().setVisibility(View.INVISIBLE);
             startFragment.getView().setVisibility(View.VISIBLE);
             weatherActivityFragment.getView().setVisibility(View.VISIBLE);
@@ -580,6 +590,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         startFragment.ClearForm();
         profileFragment.getView().setVisibility(View.INVISIBLE);
         startBtns.setVisibility(View.VISIBLE);
+        startFragment.showListButtons(true);
         profileBtn.setVisibility(View.VISIBLE);
 
     }
@@ -587,6 +598,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private void Stop(String start) {
 
         startBtns.setVisibility(View.INVISIBLE);
+        startFragment.showListButtons(false);
         startBtn.setText(start);
         mTracker.Stop();
         mSTracker.Detach();
@@ -651,8 +663,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         startFragment.setName(aktivnost.getName());
         ActivityType type = ActivityType.getById(aktivnost.getType_id());
         startFragment.setTypeName(type.getName());
+        mTracker.setExercise(aktivnost);
+        InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        startBtns.setVisibility(View.VISIBLE);
         Start(stop);
-
-        Toast.makeText(this, "New Sensor!\n" + aktivnost.getName(), Toast.LENGTH_SHORT).show();
     }
 }

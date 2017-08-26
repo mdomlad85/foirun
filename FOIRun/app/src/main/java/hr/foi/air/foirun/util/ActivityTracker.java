@@ -37,6 +37,7 @@ public class ActivityTracker extends LocationTracker {
 
     private Aktivnost mActivity;
     private Context mContext;
+    private Aktivnost exercise;
 
     private int lap;
     private GoogleMap mMap;
@@ -49,12 +50,13 @@ public class ActivityTracker extends LocationTracker {
         //OVO mora biti ma da ne vidim point pa ostavljam prazno
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
+            Toast
+                    .makeText(mContext, "There is no permissions to do this, please grant permissions and try again", Toast.LENGTH_LONG)
+                    .show();
 
         }
 
         mContext = context;
-
     }
 
     @Override
@@ -67,7 +69,13 @@ public class ActivityTracker extends LocationTracker {
 
             //if first last distance in range of 4m it is a lap
             double dist = getFirstLastDistance(location);
-            if(dist < 4.0 && dist > 0) lap++;
+            if(dist < 4.0 && dist > -4) lap++;
+
+            if(exercise != null){
+                if(dist >= exercise.getDistance()){
+                    Toast.makeText(mContext, "Congratulation! Challenge completed.", Toast.LENGTH_LONG).show();
+                }
+            }
 
             Location eLocation = new Location();
 
@@ -112,29 +120,31 @@ public class ActivityTracker extends LocationTracker {
 
     public void Start(String name, String comment, int typeId){
 
-        //OVO mora biti ma da ne vidim point pa ostavljam prazno
         if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(mContext, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-
-        }
-
-        mActivity = new Aktivnost();
-
-        isFirstLocation = true;
-
-        lap = 1;
-
-        mActivity.setName(name);
-
-        mActivity.setStart_time(getCurrentMilis());
-        mActivity.setType_id(typeId);
-        mActivity.setComment(comment);
-
-        if(mActivity.insert() > 0){
-            this.startListening();
+            Toast
+                    .makeText(mContext, "There is no permissions to do this, please grant permissions and try again", Toast.LENGTH_LONG)
+                    .show();
         } else {
-            throw new IllegalStateException("Activity not saved");
+
+            mActivity = new Aktivnost();
+
+            isFirstLocation = true;
+
+            lap = 1;
+
+            mActivity.setName(name);
+
+            mActivity.setStart_time(getCurrentMilis());
+            mActivity.setType_id(typeId);
+            mActivity.setComment(comment);
+
+            if (mActivity.insert() > 0) {
+                this.startListening();
+            } else {
+                throw new IllegalStateException("Activity not saved");
+            }
         }
     }
 
@@ -151,8 +161,6 @@ public class ActivityTracker extends LocationTracker {
 
         mActivity.setTime(getDuration());
         mActivity.setDistance(getDistance());
-        //fake
-        //mActivity.setDistance(4000);
         mActivity.setAvg_cadence(getAvgCadence());
         mActivity.setAvg_hr(getAvgHr());
         mActivity.setAvg_hr(getMaxHr());
@@ -337,8 +345,12 @@ public class ActivityTracker extends LocationTracker {
         return mActivity;
     }
 
+    public void setExercise(Aktivnost exercise){
+        this.exercise = exercise;
+    }
+
     public void clearMap() {
         //TODO crashed emulator
-//        mMap.clear();
+        mMap.clear();
     }
 }

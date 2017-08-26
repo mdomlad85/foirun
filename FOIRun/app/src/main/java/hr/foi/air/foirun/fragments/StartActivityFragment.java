@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import butterknife.BindView;
@@ -29,6 +30,9 @@ public class StartActivityFragment extends Fragment implements AdapterView.OnIte
 
     @BindView(R.id.activity_types)
     Spinner typesDdl;
+
+    @BindView(R.id.list_buttons)
+    RelativeLayout listButtons;
 
     protected String mTypeName;
 
@@ -102,6 +106,10 @@ public class StartActivityFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onNothingSelected(AdapterView<?> arg) {
 
+    }
+
+    public void showListButtons(boolean show){
+        listButtons.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
     }
 
     public void ClearForm() {
