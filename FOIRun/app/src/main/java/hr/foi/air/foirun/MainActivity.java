@@ -105,7 +105,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.start);
         start = getResources().getString(R.string.Start_Activity);
         stop = getResources().getString(R.string.Stop_Activity);
-        mTracker = new ActivityTracker(this);
+        int uid = getIntent().getIntExtra("uid", 0);
+        mTracker = new ActivityTracker(this, uid);
         mLTracker = new LocationTracker(MainActivity.this);
 
         if(mLTracker.canGetLocation()){
@@ -349,7 +350,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         int trenutnoAktivnosti = Aktivnost.getByUserId(uid).size();
         if (trenutnoAktivnosti % 5 == 0) {
             show2stTrophyMessage();
-            editor.putLong("activities_number", Aktivnost.getAll().size());
+            editor.putLong("activities_number", trenutnoAktivnosti);
             editor.apply();
             Achievement achievement = new Achievement();
             achievement.setName(String.format(getString(R.string.broj_aktivnosti), trenutnoAktivnosti));
@@ -459,7 +460,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             mTracker.getAktivnost().save();
 
             Toast.makeText(this,
-                    String.format("Activity %s saved", mTracker.getAktivnost().getName()),
+                    String.format(getString(R.string.spremljena_aktivnost), mTracker.getAktivnost().getName()),
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -518,11 +519,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    private void Stop(String start) {
+    private void Stop(String btnText) {
 
         startBtns.setVisibility(View.INVISIBLE);
         startFragment.showListButtons(false);
-        startBtn.setText(start);
+        startBtn.setText(btnText);
         mTracker.Stop();
         BusProvider.getInstance().unregister(this);
 
@@ -531,7 +532,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         stopFragment.setTimeTxt(mTracker.getAktivnost().getTime());
 
         stopFragment.getView().setVisibility(View.VISIBLE);
-        weatherActivityFragment.getView().setVisibility(View.VISIBLE);
     }
 
     private void Start(String stop) {

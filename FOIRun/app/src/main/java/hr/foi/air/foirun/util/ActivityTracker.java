@@ -35,6 +35,7 @@ import hr.foi.air.foirun.events.BusProvider;
 
 public class ActivityTracker extends LocationTracker {
 
+    private final int _uid;
     private Aktivnost mActivity;
     private Context mContext;
     private Aktivnost exercise;
@@ -43,7 +44,7 @@ public class ActivityTracker extends LocationTracker {
     private GoogleMap mMap;
     private boolean isFirstLocation = true;
 
-    public ActivityTracker(Context context) {
+    public ActivityTracker(Context context, int uid) {
 
         super(context, ActivityTracker.GetDefaultSettings());
 
@@ -57,6 +58,7 @@ public class ActivityTracker extends LocationTracker {
         }
 
         mContext = context;
+        _uid = uid;
     }
 
     @Override
@@ -168,7 +170,7 @@ public class ActivityTracker extends LocationTracker {
         mActivity.save();
 
         long km = 0;
-        for (Aktivnost a : Aktivnost.getAll()) {
+        for (Aktivnost a : Aktivnost.getByUserId(_uid)) {
             km += a.getDistance();
         }
 

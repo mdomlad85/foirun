@@ -70,5 +70,6 @@
     <string name="novi_rekord_opis">Rekordna udaljenost prođena.</string>
     <string name="broj_aktivnosti">Završeno %d aktivnost.</string>
     <string name="km_covered">Prođeno %d km .</string>
+    <string name="spremljena_aktivnost">Aktivnost %s je pohranjena</string>
 
 </resources>
