@@ -48,9 +48,7 @@ import hr.foi.air.database.entities.ActivityType;
 import hr.foi.air.database.entities.Aktivnost;
 import hr.foi.air.database.entities.User;
 import hr.foi.air.foirun.adapter.AktivnostListAdapter;
-import hr.foi.air.foirun.data.Sensor;
 import hr.foi.air.foirun.events.BusProvider;
-import hr.foi.air.foirun.events.NewSensorEvent;
 import hr.foi.air.foirun.events.OnExerciseClick;
 import hr.foi.air.foirun.fragments.ProfileAchievementsFragment;
 import hr.foi.air.foirun.fragments.ProfileActivityFragment;
@@ -59,16 +57,12 @@ import hr.foi.air.foirun.fragments.StopActivityFragment;
 import hr.foi.air.foirun.fragments.WeatherActivityFragment;
 import hr.foi.air.foirun.util.ActivityTracker;
 import hr.foi.air.foirun.util.LocationTracker;
-import hr.foi.air.foirun.util.RemoteSensorManager;
-import hr.foi.air.foirun.util.SensorTracker;
 import hr.foi.air.owf.JSONWeatherParser;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback, OnExerciseClick {
 
     private ActivityTracker mTracker;
-    private SensorTracker mSTracker;
     private LocationTracker mLTracker;
-    private RemoteSensorManager remoteSensorManager;
 
     private String start;
     private String stop;
@@ -111,9 +105,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.start);
         start = getResources().getString(R.string.Start_Activity);
         stop = getResources().getString(R.string.Stop_Activity);
-
         mTracker = new ActivityTracker(this);
-
         mLTracker = new LocationTracker(MainActivity.this);
 
         if(mLTracker.canGetLocation()){
@@ -160,16 +152,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         profileFragment.getView().setVisibility(View.INVISIBLE);
         profileAchievementsFragment.getView().setVisibility(View.INVISIBLE);
 
-        remoteSensorManager = RemoteSensorManager.getInstance(this);
-        remoteSensorManager.addTag("HEART_RATE");
-
-
-        double km = 0;
-        for (Aktivnost a : Aktivnost.getAll()) {
-            km += a.getDistance();
-        }
-
-
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
@@ -184,15 +166,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @OnClick(R.id.choose_exercise)
     public void onShowExercises(View view) {
         if (view.getId() == R.id.choose_exercise) {
-            //TODO: add filter for exercise if user already complete some
-            int uid = getIntent().getIntExtra("uid", 0);
             setupAktivnostList(Aktivnost.getExercises(), true);
         }
     }
 
     private void setupAktivnostList(List<Aktivnost> aktivnosti, boolean isExercise) {
         final AktivnostListAdapter adapter = new AktivnostListAdapter(this, aktivnosti, isExercise);
-
         scoreboard.setAdapter(adapter);
         scoreboard.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -228,7 +207,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onBackPressed() {
 
         if(profileFragment.isVisible()){
-            if(updateBtn.getText() == "Cancel"){ openDialog();}
+            if(updateBtn.getText().equals(getString(R.string.cancel_update))){ openDialog();}
             else {
                 profileFragment.getView().setVisibility(View.INVISIBLE);
                 startFragment.getView().setVisibility(View.VISIBLE);
@@ -260,12 +239,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             updateBtn.setVisibility(View.VISIBLE);
         }
         int uid = getIntent().getIntExtra("uid",  0);
-
-        profileFragment.getUsername().setText(User.getById(uid).getName());
-        profileFragment.getEmail().setText(User.getById(uid).getEmail());
-        if(User.getById(uid).getAge() != 0) { profileFragment.getAge().setText(String.valueOf(User.getById(uid).getAge())); }
-        if(User.getById(uid).getHeight() != 0) { profileFragment.getHeight().setText(String.valueOf(User.getById(uid).getHeight())); }
-        if(User.getById(uid).getWeight() != 0) { profileFragment.getWeight().setText(String.valueOf(User.getById(uid).getWeight())); }
+        profileFragment.addUser(User.getById(uid));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -273,7 +247,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         SharedPreferences mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = mSettings.edit();
         double km = 0;
-        for (Aktivnost a : Aktivnost.getAll()) {
+
+        int uid = getIntent().getIntExtra("uid", 0);
+        List<Aktivnost> aktivnosti = Aktivnost.getByUserId(uid);
+
+        for (Aktivnost a : aktivnosti) {
             km += a.getDistance();
         }
 
@@ -290,7 +268,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 editor.apply();
                 show1stTrophyMessage();
                 Achievement achievement = new Achievement();
-                achievement.setName("10 km covered.");
+                achievement.setName(String.format(getString(R.string.km_covered), 10));
                 achievement.setDate(new Date());
                 achievement.setType("");
                 achievement.save();
@@ -309,7 +287,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         long maxDistance = 0;
         long maxSaved = mSettings.getLong("max_distance", 0);
 
-        for (Aktivnost a : Aktivnost.getAll()) {
+        int uid = getIntent().getIntExtra("uid", 0);
+        List<Aktivnost> aktivnosti = Aktivnost.getByUserId(uid);
+
+
+        for (Aktivnost a : aktivnosti) {
             if (a.getDistance() >= maxDistance) {
                 maxDistance = (long) a.getDistance();
             }
@@ -320,9 +302,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if (maxDistance > maxSaved) {
             show3rdTrophyMessage();
             Achievement achievement = new Achievement();
-            achievement.setName("New max distance: " + maxDistance + ".");
+            achievement.setName(String.format(getString(R.string.novi_rekord), maxDistance / 1000));
             achievement.setDate(new Date());
-            achievement.setType("Record distance covered in one activity.");
+            achievement.setType(getString(R.string.novi_rekord_opis));
             achievement.save();
         }
 
@@ -334,74 +316,27 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMessageEvent(TotalDistanceEvent event) {
         long totalDistance = 0;
 
-        for (Aktivnost a : Aktivnost.getAll()) {
+        int uid = getIntent().getIntExtra("uid", 0);
+        List<Aktivnost> aktivnosti = Aktivnost.getByUserId(uid);
+
+        for (Aktivnost a : aktivnosti) {
             totalDistance += a.getDistance();
         }
 
+        String name = getString(R.string.rookie);
+        if (totalDistance >= 5000 && totalDistance < 15000) name = getString(R.string.jogger);
+        else if (totalDistance >= 15000 && totalDistance < 30000) name = getString(R.string.exhausted);
+        else if (totalDistance >= 30000 && totalDistance < 50000) name = getString(R.string.road_marshal);
+        else if (totalDistance >= 50000 && totalDistance < 75000)  name = getString(R.string.inexhaustible);
+        else if (totalDistance >= 75000 && totalDistance < 100000)  name = getString(R.string.road_lord);
+        else if (totalDistance >= 100000) name = getString(R.string.unstoppable);
 
-        if (totalDistance >= 50000 && totalDistance < 1000000) {
-            //the rookie
-            show4thTrophyMessage("The rookie");
-            Achievement achievement = new Achievement();
-            achievement.setName("The rookie");
-            achievement.setDate(new Date());
-            achievement.setType("");
-            achievement.save();
-        } else if (totalDistance >= 1000000 && totalDistance < 200000) {
-            //the jogger
-            show4thTrophyMessage("The jogger");
-            Achievement achievement = new Achievement();
-            achievement.setName("The jogger");
-            achievement.setDate(new Date());
-            achievement.setType("");
-            achievement.save();
-
-        } else if (totalDistance >= 2000000 && totalDistance < 300000) {
-            //the exhausted
-            show4thTrophyMessage("The exhausted");
-            Achievement achievement = new Achievement();
-            achievement.setName("The exhausted");
-            achievement.setDate(new Date());
-            achievement.setType("");
-            achievement.save();
-
-        } else if (totalDistance >= 300000 && totalDistance < 500000) {
-            //the road marshal
-            show4thTrophyMessage("The road marshal");
-            Achievement achievement = new Achievement();
-            achievement.setName("The road marshal");
-            achievement.setDate(new Date());
-            achievement.setType("");
-            achievement.save();
-
-        } else if (totalDistance >= 500000 && totalDistance < 750000) {
-            //the inexhaustible
-            show4thTrophyMessage("The inexhaustible");
-            Achievement achievement = new Achievement();
-            achievement.setName("The inexhaustible");
-            achievement.setDate(new Date());
-            achievement.setType("");
-            achievement.save();
-
-        } else if (totalDistance >= 750000 && totalDistance < 1000000) {
-            //lord of the road
-            show4thTrophyMessage("Lord of the road");
-            Achievement achievement = new Achievement();
-            achievement.setName("Lord of the road");
-            achievement.setDate(new Date());
-            achievement.setType("");
-            achievement.save();
-
-        } else if (totalDistance >= 1000000) {
-            //the unstoppable
-            show4thTrophyMessage("The unstoppable");
-            Achievement achievement = new Achievement();
-            achievement.setName("The unstoppable");
-            achievement.setDate(new Date());
-            achievement.setType("");
-            achievement.save();
-
-        }
+        show4thTrophyMessage(name);
+        Achievement achievement = new Achievement();
+        achievement.setName(name);
+        achievement.setDate(new Date());
+        achievement.setType(name);
+        achievement.save();
 
     }
 
@@ -410,13 +345,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         SharedPreferences mSettings = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = mSettings.edit();
 
-
-        if (Aktivnost.getAll().size() - mSettings.getLong("activities_number", 0) >= 5) {
+        int uid = getIntent().getIntExtra("uid", 0);
+        int trenutnoAktivnosti = Aktivnost.getByUserId(uid).size();
+        if (trenutnoAktivnosti % 5 == 0) {
             show2stTrophyMessage();
             editor.putLong("activities_number", Aktivnost.getAll().size());
             editor.apply();
             Achievement achievement = new Achievement();
-            achievement.setName("5 activities done, total number: " + Aktivnost.getAll().size());
+            achievement.setName(String.format(getString(R.string.broj_aktivnosti), trenutnoAktivnosti));
             achievement.setDate(new Date());
             achievement.setType("");
             achievement.save();
@@ -445,7 +381,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     protected void onStart() {
-
         super.onStart();
         EventBus.getDefault().register(this);
     }
@@ -459,7 +394,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @OnClick(R.id.profile_update_button)
     public void onUpdateUser() {
 
-        if (updateBtn.getText().equals("Update")) {
+        if (updateBtn.getText().equals(getString(R.string.action_update))) {
             updateClicked();
         } else {
             cancelClicked();
@@ -468,40 +403,28 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void updateClicked(){
-        profileFragment.getEmail().setEnabled(true);
-        profileFragment.getAge().setEnabled(true);
-        profileFragment.getHeight().setEnabled(true);
-        profileFragment.getWeight().setEnabled(true);
-        updateBtn.setText("Cancel");
+        profileFragment.setEnabled(true);
+        updateBtn.setText(getString(R.string.action_cancel));
         saveUserBtn.setClickable(true);
     }
 
     public void cancelClicked(){
-        profileFragment.getEmail().setEnabled(false);
-        profileFragment.getAge().setEnabled(false);
-        profileFragment.getHeight().setEnabled(false);
-        profileFragment.getWeight().setEnabled(false);
-        updateBtn.setText("Update");
-
+        profileFragment.setEnabled(false);
+        profileFragment.setValues();
+        updateBtn.setText(getString(R.string.action_update));
         saveUserBtn.setClickable(false);
     }
 
     @OnClick(R.id.profile_save_button)
     public void onSaveUserChanges(){
-        String msg = "Korisnik je uspješno ažuriran.";
+        String msg = getString(R.string.update_user_success);
         try {
-            User user = User.getById(getIntent().getIntExtra("uid", 0));
-            user.setAge(Integer.valueOf(String.valueOf(profileFragment.getAge().getText())));
-            user.setEmail(profileFragment.getEmail().getText().toString());
-            user.setHeight(Integer.valueOf(String.valueOf(profileFragment.getHeight().getText())));
-            user.setWeight(Integer.valueOf(String.valueOf(profileFragment.getWeight().getText())));
-            user.update();
+            profileFragment.saveUser();
         } catch (Exception ex){
-            msg = "Došlo je do pogreške!";
+            msg = getString(R.string.update_user_error);
             ex.printStackTrace();
         }
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-
         cancelClicked();
     }
 
@@ -551,7 +474,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             mTracker.getAktivnost().delete();
 
             Toast.makeText(this,
-                    String.format("Activity %s deleted", mTracker.getAktivnost().getName()),
+                    String.format("Aktivnost \"%s\" je obrisana", mTracker.getAktivnost().getName()),
                     Toast.LENGTH_LONG).show();
         }
     }
@@ -559,9 +482,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     public void openDialog() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
         dialog.setCancelable(false);
-        dialog.setTitle("Cancel update");
-        dialog.setMessage("Are you sure you want to cancel user update?" );
-        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+        dialog.setTitle(getString(R.string.cancel_update));
+        dialog.setMessage(getString(R.string.confirm_cancel));
+        dialog.setPositiveButton("Da", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 cancelClicked();
@@ -570,7 +493,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 weatherActivityFragment.getView().setVisibility(View.VISIBLE);
             }
         })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Ne", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //do nothing
@@ -601,8 +524,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         startFragment.showListButtons(false);
         startBtn.setText(start);
         mTracker.Stop();
-        mSTracker.Detach();
-        remoteSensorManager.stopMeasurement();
         BusProvider.getInstance().unregister(this);
 
         stopFragment.setActivityTxt(mTracker.getAktivnost().getType_id());
@@ -616,22 +537,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private void Start(String stop) {
 
         if (!startFragment.isValid()) {
-            Toast.makeText(this, "You must enter title.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Morate unijeti naslov.", Toast.LENGTH_LONG).show();
             return;
         }
 
         startBtn.setText(stop);
 
         mTracker.Start(startFragment.getName(),
-                startFragment.getComment(), startFragment.getTypeId());
+        startFragment.getComment(), startFragment.getTypeId());
 
         BusProvider.getInstance().register(this);
-
-        mSTracker = SensorTracker.newInstance(Sensor.TYPE_HEART_RATE, this);
-
-        mSTracker.Attach();
-
-        remoteSensorManager.startMeasurement();
 
         mapFragment.getView().setVisibility(View.VISIBLE);
         startFragment.getView().setVisibility(View.INVISIBLE);
@@ -648,15 +563,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mTracker.setmMap(googleMap);
     }
 
-    private void notifyUSerForNewSensor(Sensor sensor) {
-        Toast.makeText(this, "New Sensor!\n" + sensor.getName(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Subscribe
-    public void onNewSensorEvent(final NewSensorEvent event) {
-        notifyUSerForNewSensor(event.getSensor());
-    }
-
     @Override
     public void onClick(Aktivnost aktivnost) {
         startFragment.setComment(aktivnost.getComment());
@@ -667,6 +573,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         startBtns.setVisibility(View.VISIBLE);
+        scoreboard.setVisibility(View.INVISIBLE);
         Start(stop);
     }
 }

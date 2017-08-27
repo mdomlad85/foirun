@@ -1,48 +1,50 @@
 <resources>
     <string name="app_name">FOIRun</string>
-    <string name="home">Home</string>
-    <string name="title_activity_login">Sign in</string>
+    <string name="home">Početna</string>
+    <string name="title_activity_login">Prijava/Registracija</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="google_sign_in">Google Sign in</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
+    <string name="prompt_password">Lozinka (opcionalno)</string>
+    <string name="google_sign_in">Google Prijava</string>
+    <string name="action_sign_in">Prijavi se ili registriraj</string>
+    <string name="action_sign_in_short">Prijava</string>
+    <string name="error_invalid_email">Email je neispravan</string>
+    <string name="error_invalid_password">Lozinka je prekratka</string>
+    <string name="error_incorrect_password">Lozinka je netočna</string>
+    <string name="error_field_required">Polje je obavezno</string>
     <string name="GPS_satellites">GPS satellites</string>
     <string name="Start_GPS">Start GPS</string>
     <string name="test_pwd">Marko985</string>
     <string name="test_uid">mkapustic@gmail.com</string>
+    <string name="profile">Profil</string>
 
 
-    <string name="Start_Activity">Start Activity</string>
-    <string name="Stop_Activity">Stop Activity</string>
-    <string name="activity_name">Name</string>
-    <string name="activit_name_def">Activity name...</string>
-    <string name="prompt_name">Name</string>
-    <string name="prompt_comment">Comment (Optional)</string>
+    <string name="Start_Activity">Kreni</string>
+    <string name="Stop_Activity">Gotovo</string>
+    <string name="activity_name">Aktivnost</string>
+    <string name="activit_name_def">Naziv aktivnosti...</string>
+    <string name="prompt_name">Naziv</string>
+    <string name="prompt_comment">Komentar (Opcionalno)</string>
 
     <string-array name="activitytype_dropdown_arrays">
-        <item>Running</item>
-        <item>Biking</item>
-        <item>Walking</item>
-        <item>Other</item>
+        <item>Trčanje</item>
+        <item>Bicikliranje</item>
+        <item>Hodanje</item>
+        <item>Ostalo</item>
     </string-array>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="action_save_activity">Save activity</string>
-    <string name="action_delete_activity">Delete activity</string>
-    <string name="show_myactivities">Show my activities</string>
-    <string name="show_achievements">Show achievements</string>
-    <string name="choose_trening">Choose exercise</string>
+    <string name="action_save_activity">Spremi</string>
+    <string name="action_delete_activity">Obriši</string>
+    <string name="action_cancel">Odustani</string>
+    <string name="show_myactivities">Moje aktivnosi</string>
+    <string name="show_achievements">Moja postignuća</string>
+    <string name="choose_trening">Izazovi</string>
+    <string name="update_user_success">Korisnik je uspješno ažuriran.</string>
+    <string name="update_user_error">Došlo je do pogreške.</string>
+    <string name="cancel_update">Odustani</string>
+    <string name="confirm_cancel">Sigurno želite odustati od ažuriranja?</string>
     <string name="go_back" />
 
     <string name="ow_api_key">73ccdc4bdf0e460c149b9a4ac11844bf</string>
@@ -50,12 +52,23 @@
     <string name="pressure">Tlak</string>
     <string name="wind">Vjetar</string>
     <string name="humidity">Vlaga</string>
-    <string name="action_update">Update</string>
-    <string name="action_save">Save</string>
-    <string name="profileUsername">Username</string>
+    <string name="action_update">Ažuriraj</string>
+    <string name="action_save">Spremi</string>
+    <string name="profileUsername">Korisničko ime</string>
     <string name="profileEmail">Email</string>
-    <string name="profileAge">Age</string>
-    <string name="profileHeight">Height</string>
-    <string name="profileWeight">Weight</string>
+    <string name="profileAge">Godine</string>
+    <string name="profileHeight">Visina</string>
+    <string name="profileWeight">Težina</string>
+    <string name="rookie">Početnik</string>
+    <string name="jogger">Džoger</string>
+    <string name="exhausted">maratonac</string>
+    <string name="road_marshal">Vladar ceste</string>
+    <string name="inexhaustible">Neumoran</string>
+    <string name="road_lord">Super maratonac</string>
+    <string name="unstoppable">Nezaustavljiv</string>
+    <string name="novi_rekord">\"Novi rekord:  %d km\"</string>
+    <string name="novi_rekord_opis">Rekordna udaljenost prođena.</string>
+    <string name="broj_aktivnosti">Završeno %d aktivnost.</string>
+    <string name="km_covered">Prođeno %d km .</string>
 
 </resources>

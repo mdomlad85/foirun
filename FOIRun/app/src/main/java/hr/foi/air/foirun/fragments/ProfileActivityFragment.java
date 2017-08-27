@@ -9,6 +9,7 @@ import android.widget.EditText;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import hr.foi.air.database.entities.User;
 import hr.foi.air.foirun.R;
 
 /**
@@ -32,6 +33,7 @@ public class ProfileActivityFragment extends Fragment {
 
     @BindView(R.id.profile_weight)
     EditText weight;
+    private User user;
 
     public ProfileActivityFragment() {
         // Required empty public constructor
@@ -50,23 +52,31 @@ public class ProfileActivityFragment extends Fragment {
         return view;
     }
 
-    public EditText getUsername() {
-        return username;
+    public void addUser(User user) {
+        this.user = user;
+        setValues();
     }
 
-    public EditText getEmail() {
-        return email;
+    public void setEnabled(boolean enabled) {
+        email.setEnabled(enabled);
+        age.setEnabled(enabled);
+        height.setEnabled(enabled);
+        weight.setEnabled(enabled);
     }
 
-    public EditText getAge() {
-        return age;
+    public void saveUser() {
+        user.setAge(Integer.valueOf(String.valueOf(age.getText())));
+        user.setEmail(email.getText().toString());
+        user.setHeight(Integer.valueOf(String.valueOf(height.getText())));
+        user.setWeight(Integer.valueOf(String.valueOf(weight.getText())));
+        user.update();
     }
 
-    public EditText getHeight() {
-        return height;
-    }
-
-    public EditText getWeight() {
-        return weight;
+    public void setValues() {
+        username.setText(user.getName());
+        email.setText(user.getEmail());
+        if(user.getAge() != 0) { age.setText(String.valueOf(user.getAge())); }
+        if(user.getHeight() != 0) { height.setText(String.valueOf(user.getHeight())); }
+        if(user.getWeight() != 0) { weight.setText(String.valueOf(user.getWeight())); }
     }
 }

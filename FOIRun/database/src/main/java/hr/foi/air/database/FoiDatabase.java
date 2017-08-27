@@ -18,7 +18,7 @@ public class FoiDatabase {
 
     public static void FillActivityTracker() {
 
-        String[] strTypes = {"Running", "Biking", "Walking", "Other"};
+        String[] strTypes = {"Trčanje", "Bicikliranje", "Hodanje", "Ostalo"};
 
         List<ActivityType> types = ActivityType.getAll();
 
@@ -74,7 +74,7 @@ public class FoiDatabase {
             aktivnost.setDistance(distance);
             float kms = distance / 1000;
             aktivnost.setName(String.format("%.2f km %s", kms, type.getName()));
-            aktivnost.setComment(String.format("%s for %.2f kilometer", type.getName(), kms));
+            aktivnost.setComment(String.format("%s for %.2f kilometar", type.getName(), kms));
             aktivnost.setType_id(type.getId());
             aktivnost.setIs_exercise(true);
             aktivnost.save();
