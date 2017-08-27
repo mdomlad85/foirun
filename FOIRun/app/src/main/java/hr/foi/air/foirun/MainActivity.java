@@ -137,6 +137,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         profileAchievementsFragment = (ProfileAchievementsFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.profileaachievements_fragment);
+        profileAchievementsFragment.setUid(uid);
 
 
 
@@ -272,6 +273,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 achievement.setName(String.format(getString(R.string.km_covered), 10));
                 achievement.setDate(new Date());
                 achievement.setType("");
+                achievement.setUser_id(uid);
                 achievement.save();
             }
 
@@ -306,6 +308,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             achievement.setName(String.format(getString(R.string.novi_rekord), maxDistance / 1000));
             achievement.setDate(new Date());
             achievement.setType(getString(R.string.novi_rekord_opis));
+            achievement.setUser_id(uid);
             achievement.save();
         }
 
@@ -337,6 +340,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         achievement.setName(name);
         achievement.setDate(new Date());
         achievement.setType(name);
+        achievement.setUser_id(uid);
         achievement.save();
 
     }
@@ -348,7 +352,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         int uid = getIntent().getIntExtra("uid", 0);
         int trenutnoAktivnosti = Aktivnost.getByUserId(uid).size();
-        if (trenutnoAktivnosti % 5 == 0) {
+        if (trenutnoAktivnosti % 5 == 0 && trenutnoAktivnosti > 0) {
             show2stTrophyMessage();
             editor.putLong("activities_number", trenutnoAktivnosti);
             editor.apply();
@@ -356,6 +360,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             achievement.setName(String.format(getString(R.string.broj_aktivnosti), trenutnoAktivnosti));
             achievement.setDate(new Date());
             achievement.setType("");
+            achievement.setUser_id(uid);
             achievement.save();
         }
     }

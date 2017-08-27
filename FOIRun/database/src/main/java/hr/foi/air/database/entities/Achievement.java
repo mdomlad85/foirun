@@ -4,6 +4,7 @@ import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
+import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import java.util.Date;
@@ -31,9 +32,18 @@ public class Achievement extends BaseModel {
     @Column
     Date date;
 
+    @Column
+    int user_id;
+
 
     public static List<Achievement> getAll() {
         return SQLite.select().from(Achievement.class).queryList();
+    }
+
+    public static List<Achievement> getByUserId(int uid) {
+        return new Select().from(Achievement.class)
+                .where(Achievement_Table.user_id.eq(uid))
+                .queryList();
     }
 
     public String getType() {
@@ -58,5 +68,13 @@ public class Achievement extends BaseModel {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
     }
 }

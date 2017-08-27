@@ -23,6 +23,7 @@ import hr.foi.air.foirun.adapter.AchievementsListAdapter;
 public class ProfileAchievementsFragment extends Fragment {
 
     RecyclerView rvAchievements;
+    private int _uid;
 
     @Nullable
     @Override
@@ -30,7 +31,7 @@ public class ProfileAchievementsFragment extends Fragment {
         View view = inflater.inflate(R.layout.achievements_fragment, container, false);
 
         rvAchievements = (RecyclerView) view.findViewById(R.id.rvAchievements);
-        AchievementsListAdapter achievementsListAdapter = new AchievementsListAdapter(Achievement.getAll(), getContext());
+        AchievementsListAdapter achievementsListAdapter = new AchievementsListAdapter(Achievement.getByUserId(_uid), getContext());
         rvAchievements.setAdapter(achievementsListAdapter);
         rvAchievements.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -38,9 +39,13 @@ public class ProfileAchievementsFragment extends Fragment {
     }
 
     public void refreshList() {
-        AchievementsListAdapter achievementsListAdapter = new AchievementsListAdapter(Achievement.getAll(), getContext());
+        AchievementsListAdapter achievementsListAdapter = new AchievementsListAdapter(Achievement.getByUserId(_uid), getContext());
         rvAchievements.setAdapter(achievementsListAdapter);
 
         rvAchievements.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    public void setUid(int uid) {
+        this._uid = uid;
     }
 }
