@@ -16,14 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 import com.example.trophies.Trophy;
-import com.example.trophies.Trophy1;
-import com.example.trophies.Trophy2;
-import com.example.trophies.Trophy3;
-import com.example.trophies.Trophy4;
-import com.example.trophies.events.NumberOfActivitiesEvent;
-import com.example.trophies.events.RecordDistanceEvent;
-import com.example.trophies.events.SaveDistanceEvent;
-import com.example.trophies.events.TotalDistanceEvent;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -37,6 +29,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
 import butterknife.BindView;
@@ -245,144 +238,36 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(SaveDistanceEvent event) {/* Do something */
-        SharedPreferences mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = mSettings.edit();
-        double km = 0;
+    public void onMessageEvent(Aktivnost aktivnost) {
+        List<Aktivnost> aktivnosti = Aktivnost.getByUserId(aktivnost.getUser_id());
 
-        int uid = getIntent().getIntExtra("uid", 0);
-        List<Aktivnost> aktivnosti = Aktivnost.getByUserId(uid);
-
-        for (Aktivnost a : aktivnosti) {
-            km += a.getDistance();
-        }
-
-        long lastshown = mSettings.getLong("last_shown", 0);
-        long to10km = mSettings.getLong("to10km", 0);
-
-        if (km >= 10000) {
-            double remainder = km % 10000;
-
-            if (km >= (lastshown + 10000)) {
-                //showdialog, save data
-                editor.putLong("last_shown", ((long) km));
-                //editor.putLong("to10km", ((long) remainder));
-                editor.apply();
-                show1stTrophyMessage();
-                Achievement achievement = new Achievement();
-                achievement.setName(String.format(getString(R.string.km_covered), 10));
-                achievement.setDate(new Date());
-                achievement.setType("");
-                achievement.setUser_id(uid);
-                achievement.save();
-            }
-
-
-        }
-
-
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(RecordDistanceEvent event) /* Do something */ {
-        SharedPreferences mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = mSettings.edit();
-        long maxDistance = 0;
-        long maxSaved = mSettings.getLong("max_distance", 0);
-
-        int uid = getIntent().getIntExtra("uid", 0);
-        List<Aktivnost> aktivnosti = Aktivnost.getByUserId(uid);
-
-
-        for (Aktivnost a : aktivnosti) {
-            if (a.getDistance() >= maxDistance) {
-                maxDistance = (long) a.getDistance();
+        for (int i = 1; i <= 4; i++) {
+            Trophy trophy = null;
+            try {
+                trophy = (Trophy) Class.forName(String.format("com.example.trophies.Trophy%d", i))
+                        .getConstructor(List.class)
+                        .newInstance(aktivnosti);
+                activateTrophy(trophy);
+            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
             }
         }
-        editor.putLong("max_distance", maxDistance);
-        editor.apply();
-
-        if (maxDistance > maxSaved) {
-            show3rdTrophyMessage();
-            Achievement achievement = new Achievement();
-            achievement.setName(String.format(getString(R.string.novi_rekord), maxDistance / 1000));
-            achievement.setDate(new Date());
-            achievement.setType(getString(R.string.novi_rekord_opis));
-            achievement.setUser_id(uid);
-            achievement.save();
-        }
-
-
-
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(TotalDistanceEvent event) {
-        long totalDistance = 0;
-
-        int uid = getIntent().getIntExtra("uid", 0);
-        List<Aktivnost> aktivnosti = Aktivnost.getByUserId(uid);
-
-        for (Aktivnost a : aktivnosti) {
-            totalDistance += a.getDistance();
+    private void activateTrophy(Trophy trophy) {
+        if(trophy.isAchieved()){
+            saveAchievement(trophy);
+            trophy.showDialog(this, trophy.getAchivementName());
         }
+    }
 
-        String name = getString(R.string.rookie);
-        if (totalDistance >= 5000 && totalDistance < 15000) name = getString(R.string.jogger);
-        else if (totalDistance >= 15000 && totalDistance < 30000) name = getString(R.string.exhausted);
-        else if (totalDistance >= 30000 && totalDistance < 50000) name = getString(R.string.road_marshal);
-        else if (totalDistance >= 50000 && totalDistance < 75000)  name = getString(R.string.inexhaustible);
-        else if (totalDistance >= 75000 && totalDistance < 100000)  name = getString(R.string.road_lord);
-        else if (totalDistance >= 100000) name = getString(R.string.unstoppable);
-
-        show4thTrophyMessage(name);
+    private void saveAchievement(Trophy trophy) {
         Achievement achievement = new Achievement();
-        achievement.setName(name);
+        achievement.setName(trophy.getAchivementName());
         achievement.setDate(new Date());
-        achievement.setType(name);
-        achievement.setUser_id(uid);
+        achievement.setType("");
+        achievement.setUser_id(getIntent().getIntExtra("uid", 0));
         achievement.save();
-
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(NumberOfActivitiesEvent event) {
-        SharedPreferences mSettings = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = mSettings.edit();
-
-        int uid = getIntent().getIntExtra("uid", 0);
-        int trenutnoAktivnosti = Aktivnost.getByUserId(uid).size();
-        if (trenutnoAktivnosti % 5 == 0 && trenutnoAktivnosti > 0) {
-            show2stTrophyMessage();
-            editor.putLong("activities_number", trenutnoAktivnosti);
-            editor.apply();
-            Achievement achievement = new Achievement();
-            achievement.setName(String.format(getString(R.string.broj_aktivnosti), trenutnoAktivnosti));
-            achievement.setDate(new Date());
-            achievement.setType("");
-            achievement.setUser_id(uid);
-            achievement.save();
-        }
-    }
-
-    public void show1stTrophyMessage() {
-        Trophy trophy1 = new Trophy1();
-        trophy1.showDialog(this, "");
-    }
-
-    public void show2stTrophyMessage() {
-        Trophy trophy2 = new Trophy2();
-        trophy2.showDialog(this, "");
-    }
-
-    public void show3rdTrophyMessage() {
-        Trophy trophy3 = new Trophy3();
-        trophy3.showDialog(this, "");
-    }
-
-    public void show4thTrophyMessage(String text) {
-        Trophy trophy4 = new Trophy4();
-        trophy4.showDialog(this, text);
     }
 
     @Override

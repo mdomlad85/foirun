@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Trophies</string>
+    <string name="rookie">Početnik</string>
+    <string name="jogger">Džoger</string>
+    <string name="exhausted">Maratonac</string>
+    <string name="road_marshal">Vladar ceste</string>
+    <string name="inexhaustible">Neumoran</string>
+    <string name="road_lord">Super maratonac</string>
+    <string name="unstoppable">Nezaustavljiv</string>
+    <string name="novi_rekord">\"Novi rekord:  %d km\"</string>
+    <string name="novi_rekord_opis">Rekordna udaljenost prođena.</string>
+    <string name="broj_aktivnosti">Završeno %d aktivnost.</string>
+    <string name="km_covered">Prođeno %d km .</string>
+    <string name="spremljena_aktivnost">Aktivnost %s je pohranjena</string>
 </resources>

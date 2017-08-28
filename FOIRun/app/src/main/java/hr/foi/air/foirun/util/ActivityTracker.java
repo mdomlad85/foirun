@@ -169,16 +169,7 @@ public class ActivityTracker extends LocationTracker {
 
         mActivity.save();
 
-        long km = 0;
-        for (Aktivnost a : Aktivnost.getByUserId(_uid)) {
-            km += a.getDistance();
-        }
-
-        EventBus.getDefault().post(new SaveDistanceEvent(km));
-        EventBus.getDefault().post(new NumberOfActivitiesEvent());
-        EventBus.getDefault().post(new RecordDistanceEvent());
-        EventBus.getDefault().post(new TotalDistanceEvent());
-
+        EventBus.getDefault().post(mActivity);
     }
 
     public long getCurrentMilis() {
