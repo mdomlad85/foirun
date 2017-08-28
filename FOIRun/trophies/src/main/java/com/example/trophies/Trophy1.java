@@ -39,11 +39,11 @@ public class Trophy1 extends Trophy {
 
     @Override
     public String getAchivementName() {
-        return String.format(getString(R.string.km_covered), 10);
+        return String.format("Prođeno %d km .", 10);
     }
 
     @Override
     public String getText() {
-        return String.format(getString(R.string.km_covered), 10);
+        return getAchivementName();
     }
 }

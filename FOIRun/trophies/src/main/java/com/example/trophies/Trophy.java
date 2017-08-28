@@ -18,7 +18,7 @@ public abstract class Trophy {
         this.aktivnosti = aktivnosti;
     }
 
-    protected String getString(int id){
+    public String getString(int id){
         return Resources.getSystem().getString(id);
     }
 
